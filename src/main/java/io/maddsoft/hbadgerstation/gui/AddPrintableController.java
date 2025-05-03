@@ -1,0 +1,56 @@
+package io.maddsoft.hbadgerstation.gui;
+
+import io.maddsoft.hbadgerstation.storage.AuthorImporter;
+import io.maddsoft.hbadgerstation.storage.ModelImporter;
+import java.io.File;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+
+@Slf4j
+public class AddPrintableController implements Controller{
+
+  private Controller parent;
+
+  @FXML private TextField pathField;
+  @FXML private TextField authorField;
+
+  @FXML private Button importButton;
+
+  private File chosenDirectory;
+
+  @FXML
+  private void initialize() {
+    pathField.textProperty().addListener((observable, oldValue, newValue) -> {
+      importButton.setDisable(!StringUtils.isNotBlank(newValue));
+    });
+  }
+
+  @Override
+  public void setParent(Controller parent) {
+    this.parent = parent;
+  }
+
+  public void openFileChooser(ActionEvent actionEvent) {
+    DirectoryChooser directoryChooser = new DirectoryChooser();
+    directoryChooser.setTitle("Select a directory");
+    chosenDirectory = directoryChooser.showDialog(pathField.getScene().getWindow());
+    if (chosenDirectory != null) {
+      pathField.setText(chosenDirectory.getAbsolutePath());
+    }
+  }
+
+  public void importPrintableAction(ActionEvent event){
+    String authorName = StringUtils.isNotBlank(authorField.textProperty().getValue()) ? authorField.textProperty().getValue().trim() : AuthorImporter.DEFAULT_AUTHOR_NAME;
+    if (chosenDirectory != null) {
+      new ModelImporter(chosenDirectory, authorName).importModel();
+      parent.refreshDataViews();
+      ((Stage) importButton.getScene().getWindow()).close();
+    }
+  }
+}

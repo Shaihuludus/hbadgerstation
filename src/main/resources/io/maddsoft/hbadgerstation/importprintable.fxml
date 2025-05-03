@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.maddsoft.hbadgerstation.gui.AddPrintableController">
+   <children>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="281.0" prefWidth="649.0" styleClass="button-circle">
+         <children>
+            <TextField fx:id="pathField" alignment="CENTER" layoutX="190.0" layoutY="45.0" prefHeight="25.0" prefWidth="291.0" />
+            <Button fx:id="chooseDirectoryButton" layoutX="499.0" layoutY="45.0" mnemonicParsing="false" onAction="#openFileChooser" styleClass=".button.center-pill" text="Choose Directory" />
+            <Button fx:id="importButton" disable="true" layoutX="499.0" layoutY="141.0" mnemonicParsing="false" onAction="#importPrintableAction" text="Import" />
+            <TextField fx:id="authorField" layoutX="189.0" layoutY="88.0" prefHeight="25.0" prefWidth="294.0" promptText="unknown" />
+            <Label contentDisplay="CENTER" layoutX="73.0" layoutY="49.0" text="Printable Directory" />
+            <Label layoutX="73.0" layoutY="92.0" text="Author" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

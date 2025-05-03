@@ -23,6 +23,6 @@ public class AuthorImporter {
           .authorName(authorName)
           .websiteUrl(websiteUrl)
           .build());
-    };
+    }
   }
 }

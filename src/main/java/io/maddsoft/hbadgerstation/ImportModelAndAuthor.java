@@ -12,7 +12,7 @@ import org.dizitart.no2.common.WriteResult;
 
 public class ImportModelAndAuthor {
 
-  DatabaseManager databaseManager = new DatabaseManager();
+  final DatabaseManager databaseManager = new DatabaseManager();
 
   public static void main(String[] args) {
     if (args.length == 0) {

@@ -37,7 +37,7 @@ public class LibraryViewController implements Controller{
     libraryView.getItems().setAll(databaseManager.getPrintableThings());
   }
 
-  public void openImportPrintableDialog(ActionEvent event) {
+  public void openImportPrintableDialog() {
     try {
       FXMLLoader fxmlLoader = new FXMLLoader();
       fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/importprintable.fxml"));

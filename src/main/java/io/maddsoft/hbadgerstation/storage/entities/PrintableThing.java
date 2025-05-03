@@ -65,6 +65,7 @@ public class PrintableThing {
           .put("directoryPath", entity.getDirectoryPath());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public PrintableThing fromDocument(Document document, NitriteMapper nitriteMapper) {
       return PrintableThing.builder()

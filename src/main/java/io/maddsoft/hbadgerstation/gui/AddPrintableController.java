@@ -3,7 +3,6 @@ package io.maddsoft.hbadgerstation.gui;
 import io.maddsoft.hbadgerstation.storage.AuthorImporter;
 import io.maddsoft.hbadgerstation.storage.ModelImporter;
 import java.io.File;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -26,9 +25,7 @@ public class AddPrintableController implements Controller{
 
   @FXML
   private void initialize() {
-    pathField.textProperty().addListener((observable, oldValue, newValue) -> {
-      importButton.setDisable(!StringUtils.isNotBlank(newValue));
-    });
+    pathField.textProperty().addListener((_, _, newValue) -> importButton.setDisable(!StringUtils.isNotBlank(newValue)));
   }
 
   @Override
@@ -36,7 +33,7 @@ public class AddPrintableController implements Controller{
     this.parent = parent;
   }
 
-  public void openFileChooser(ActionEvent actionEvent) {
+  public void openFileChooser() {
     DirectoryChooser directoryChooser = new DirectoryChooser();
     directoryChooser.setTitle("Select a directory");
     chosenDirectory = directoryChooser.showDialog(pathField.getScene().getWindow());
@@ -45,7 +42,7 @@ public class AddPrintableController implements Controller{
     }
   }
 
-  public void importPrintableAction(ActionEvent event){
+  public void importPrintableAction(){
     String authorName = StringUtils.isNotBlank(authorField.textProperty().getValue()) ? authorField.textProperty().getValue().trim() : AuthorImporter.DEFAULT_AUTHOR_NAME;
     if (chosenDirectory != null) {
       new ModelImporter(chosenDirectory, authorName).importModel();

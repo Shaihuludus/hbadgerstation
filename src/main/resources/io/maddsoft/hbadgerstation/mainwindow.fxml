@@ -63,7 +63,8 @@
                <children>
                   <TableView fx:id="libraryView" prefHeight="200.0" prefWidth="200.0">
                     <columns>
-                      <TableColumn fx:id="nameColumn" prefWidth="280.0" text="Name" />
+                        <TableColumn fx:id="previewColumn" prefWidth="169.0" text="Preview" />
+                      <TableColumn fx:id="nameColumn" prefWidth="186.0" text="Name" />
                       <TableColumn fx:id="authorColumn" minWidth="0.0" prefWidth="316.0" text="Author" />
                     </columns>
                   </TableView>

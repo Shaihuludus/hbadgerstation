@@ -27,8 +27,8 @@ public class ModelImporter {
   public ModelImporter(File directory, String authorName) {
     this.directory = directory;
     this.authorName = authorName;
-    printableFilesExtensions = Settings.getSet("printableFiles");
-    imagesExtensions = Settings.getSet("images");
+    printableFilesExtensions = Settings.getSet("file types", "printableFiles");
+    imagesExtensions = Settings.getSet("file types","images");
   }
 
   public void importModel() {
@@ -55,11 +55,11 @@ public class ModelImporter {
         }
         String extension = FilenameUtils.getExtension(file.getName());
         if (printableFilesExtensions.contains(extension)) {
-          printableFiles.add(file.getName());
+          printableFiles.add(file.getAbsolutePath());
         } else if (imagesExtensions.contains(extension)) {
-          images.add(file.getName());
-        } else if (otherFiles.contains(extension)) {
-          otherFiles.add(file.getName());
+          images.add(file.getAbsolutePath());
+        } else  {
+          otherFiles.add(file.getAbsolutePath());
         }
       });
     }

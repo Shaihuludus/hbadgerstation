@@ -35,7 +35,7 @@ public class NitriteManager {
     }
 log.info("Opening Nitrite DB...");
     MVStoreModule storeModule = MVStoreModule.withConfig()
-        .filePath(Settings.getString("dbPath", "library.db"))
+        .filePath(Settings.getString("database", "dbPath", "library.db"))
         .build();
     SimpleNitriteMapper documentMapper = new SimpleNitriteMapper();
     documentMapper.registerEntityConverter(new Author.AuthorConverter());

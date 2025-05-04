@@ -1,9 +1,9 @@
 package io.maddsoft.hbadgerstation.gui;
 
+import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement;
+import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement.PrintableThingTableElementConverter;
 import io.maddsoft.hbadgerstation.storage.DatabaseManager;
-import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
 import java.io.IOException;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,9 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LibraryViewController implements Controller{
 
-  @FXML private TableView<PrintableThing> libraryView;
-  @FXML private TableColumn<PrintableThing, String> nameColumn;
-  @FXML private TableColumn<PrintableThing, String> authorColumn;
+  @FXML private TableView<PrintableThingTableElement> libraryView;
+  @FXML private TableColumn<PrintableThingTableElement, String> nameColumn;
+  @FXML private TableColumn<PrintableThingTableElement, String> authorColumn;
+  @FXML private TableColumn<PrintableThingTableElement, String> previewColumn;
   @FXML private AnchorPane librarySidebar;
 
   private final DatabaseManager databaseManager = new DatabaseManager();
@@ -34,7 +35,9 @@ public class LibraryViewController implements Controller{
 
     nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     authorColumn.setCellValueFactory(new PropertyValueFactory<>("authorName"));
-    libraryView.getItems().setAll(databaseManager.getPrintableThings());
+    previewColumn.setCellValueFactory(new PropertyValueFactory<>("previewImageView"));
+    libraryView.getItems().setAll(databaseManager.getPrintableThings().stream().map(
+        PrintableThingTableElementConverter::convert).toList());
   }
 
   public void openImportPrintableDialog() {
@@ -57,6 +60,7 @@ public class LibraryViewController implements Controller{
   @Override
   public void refreshDataViews() {
     libraryView.getItems().clear();
-    libraryView.getItems().addAll(databaseManager.getPrintableThings());
+    libraryView.getItems().addAll(databaseManager.getPrintableThings().stream().map(
+        PrintableThingTableElementConverter::convert).toList());
   }
 }

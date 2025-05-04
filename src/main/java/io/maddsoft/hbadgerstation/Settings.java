@@ -28,32 +28,32 @@ public class Settings {
     }
   }
 
-  public static String getString(String key) {
-    return instance.iniConfiguration.getString(key);
+  public static String getString(String section, String key) {
+    return instance.iniConfiguration.getSection(section).getString(key);
   }
 
-  public static int getInt(String key) {
-    return instance.iniConfiguration.getInt(key);
+  public static int getInt(String section, String key) {
+    return instance.iniConfiguration.getSection(section).getInt(key);
   }
 
-  public static boolean getBoolean(String key) {
-    return instance.iniConfiguration.getBoolean(key);
+  public static boolean getBoolean(String section, String key) {
+    return instance.iniConfiguration.getSection(section).getBoolean(key);
   }
 
-  public static String getString(String key, String defaultValue) {
-    return instance.iniConfiguration.getString(key, defaultValue);
+  public static String getString(String section, String key, String defaultValue) {
+    return instance.iniConfiguration.getSection(section).getString(key, defaultValue);
   }
 
-  public static int getInt(String key, int defaultValue) {
-    return instance.iniConfiguration.getInt(key, defaultValue);
+  public static int getInt(String section, String key, int defaultValue) {
+    return instance.iniConfiguration.getSection(section).getInt( key, defaultValue);
   }
 
-  public static boolean getBoolean(String key, boolean defaultValue) {
-    return instance.iniConfiguration.getBoolean(key, defaultValue);
+  public static boolean getBoolean(String section, String key, boolean defaultValue) {
+    return instance.iniConfiguration.getSection(section).getBoolean(key, defaultValue);
   }
 
-  public static Set<String> getSet(String key) {
-    String value = instance.iniConfiguration.getString(key);
+  public static Set<String> getSet(String section, String key) {
+    String value = instance.iniConfiguration.getSection(section).getString(key);
     if (StringUtils.isNotBlank(value)) {
       return Arrays.stream(value.split(","))
           .map(string-> string.trim().toLowerCase())

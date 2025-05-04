@@ -1,0 +1,5 @@
+.toggle-button:selected, .toggle-button:selected:focused {
+  -fx-background-color: -color-base-0;
+  -fx-text-fill: -color-button-fg-selected;
+  -fx-background-insets: 0;
+}

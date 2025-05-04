@@ -27,17 +27,27 @@ public class LibraryViewController implements Controller{
 
   private final DatabaseManager databaseManager = new DatabaseManager();
 
+  private MainWindowController parent;
+
   @FXML
   private void initialize() {
     SplitPane.setResizableWithParent(libraryView, false);
     SplitPane.setResizableWithParent(librarySidebar, false);
-
 
     nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     authorColumn.setCellValueFactory(new PropertyValueFactory<>("authorName"));
     previewColumn.setCellValueFactory(new PropertyValueFactory<>("previewImageView"));
     libraryView.getItems().setAll(databaseManager.getPrintableThings().stream().map(
         PrintableThingTableElementConverter::convert).toList());
+
+    libraryView.getSelectionModel().selectedItemProperty().addListener((_, _, selectedRow) -> {
+      parent.activateModeSwitcher(selectedRow != null);
+    });
+  }
+
+  @Override
+  public void setParent(Controller parent) {
+    this.parent = (MainWindowController) parent;
   }
 
   public void openImportPrintableDialog() {

@@ -4,6 +4,7 @@ import io.maddsoft.hbadgerstation.storage.entities.Author;
 import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.dizitart.no2.collection.NitriteId;
 import org.dizitart.no2.common.WriteResult;
 import org.dizitart.no2.exceptions.NitriteException;
 
@@ -62,5 +63,9 @@ public class DatabaseManager {
 
   public Author getAuthorByName(String authorName) {
     return nitriteManager.getAuthorRepository().getById(authorName);
+  }
+
+  public PrintableThing getPrintableThingById(NitriteId nitriteId) {
+    return nitriteManager.getPrintableThingRepository().getById(nitriteId);
   }
 }

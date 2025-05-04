@@ -40,9 +40,8 @@ public class LibraryViewController implements Controller{
     libraryView.getItems().setAll(databaseManager.getPrintableThings().stream().map(
         PrintableThingTableElementConverter::convert).toList());
 
-    libraryView.getSelectionModel().selectedItemProperty().addListener((_, _, selectedRow) -> {
-      parent.activateModeSwitcher(selectedRow != null);
-    });
+    libraryView.getSelectionModel().selectedItemProperty()
+        .addListener((_, _, selectedRow) -> parent.activateModeSwitcher(selectedRow != null));
   }
 
   @Override
@@ -54,10 +53,10 @@ public class LibraryViewController implements Controller{
     try {
       FXMLLoader fxmlLoader = new FXMLLoader();
       fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/importprintable.fxml"));
-      Parent parent = fxmlLoader.load();
+      Parent view = fxmlLoader.load();
       Controller controller =fxmlLoader.getController();
       controller.setParent(this);
-      Scene scene = new Scene(parent);
+      Scene scene = new Scene(view);
       Stage stage = new Stage();
       stage.setResizable(false);
       stage.setScene(scene);

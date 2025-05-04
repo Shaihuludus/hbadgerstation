@@ -12,17 +12,17 @@ import lombok.Getter;
 @Getter
 public class PrintableThingTableElement {
 
-  private ImageView previewImageView;
+  private final ImageView previewImageView;
 
-  private String name;
+  private final String name;
 
-  private String authorName;
+  private final String authorName;
 
   public PrintableThingTableElement(String imagePath, String name, String authorName) {
     this.name=name;
     this.authorName=authorName;
     previewImageView = new ImageView(new Image(imagePath));
-    previewImageView.setFitWidth(GUIDefaults.IMAGE_MINIATIRUE_WIDTH);
+    previewImageView.setFitWidth(GUIDefaults.IMAGE_MINIATURE_WIDTH);
     previewImageView.setPreserveRatio(true);
   }
 
@@ -30,7 +30,7 @@ public class PrintableThingTableElement {
     this.name=name;
     this.authorName=authorName;
     previewImageView = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream(GUIDefaults.DEFAULT_IMAGE))));
-    previewImageView.setFitWidth(GUIDefaults.IMAGE_MINIATIRUE_WIDTH);
+    previewImageView.setFitWidth(GUIDefaults.IMAGE_MINIATURE_WIDTH);
     previewImageView.setPreserveRatio(true);
   }
 

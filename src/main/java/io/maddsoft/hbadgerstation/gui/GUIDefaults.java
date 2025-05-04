@@ -4,7 +4,8 @@ public class GUIDefaults {
 
   public static final String DEFAULT_IMAGE = "/default-placeholder.png";
 
-  public static final int IMAGE_MINIATIRUE_WIDTH = 120;
+  public static final int IMAGE_MINIATURE_WIDTH = 120;
 
+  private GUIDefaults() {}
 }
 

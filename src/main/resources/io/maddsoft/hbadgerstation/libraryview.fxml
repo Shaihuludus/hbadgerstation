@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<SplitPane fx:id="libraryDivider" dividerPositions="0.16" focusTraversable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.maddsoft.hbadgerstation.gui.LibraryViewController">
+   <items>
+      <AnchorPane fx:id="librarySidebar" prefHeight="567.0" prefWidth="364.0">
+         <children>
+            <Button layoutX="-13.0" layoutY="20.0" mnemonicParsing="false" onAction="#openImportPrintableDialog" style="-fx-background-color: -color-base-2;" styleClass="rounded" text="Import Printable" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+         </children>
+      </AnchorPane>
+      <GridPane>
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <TableView fx:id="libraryView" prefHeight="200.0" prefWidth="200.0">
+               <columns>
+                  <TableColumn fx:id="previewColumn" prefWidth="169.0" text="Preview" />
+                  <TableColumn fx:id="nameColumn" prefWidth="186.0" text="Name" />
+                  <TableColumn fx:id="authorColumn" minWidth="0.0" prefWidth="316.0" text="Author" />
+               </columns>
+            </TableView>
+         </children>
+      </GridPane>
+   </items>
+</SplitPane>

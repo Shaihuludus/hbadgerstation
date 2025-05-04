@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.maddsoft.hbadgerstation.gui.ImageViewController">
+   <children>
+      <ImageView fx:id="imageView" fitHeight="500.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS" />
+      <Label fx:id="imageName" text="Label" />
+   </children>
+</VBox>

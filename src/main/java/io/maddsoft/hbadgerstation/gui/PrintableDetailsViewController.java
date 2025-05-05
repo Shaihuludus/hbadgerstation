@@ -7,14 +7,13 @@ import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.collection.NitriteId;
@@ -69,7 +68,8 @@ public class PrintableDetailsViewController implements Controller{
 
   private void setupImageTab() {
     imageListView.getItems().clear();
-    HBox rowBox = new HBox();
+    HBox rowBox = setupImageBox();
+    rowBox.setAlignment(Pos.CENTER);
     for (String imageName : printableThing.getImages())  {
       FXMLLoader fxmlLoader = new FXMLLoader();
       fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/imageView.fxml"));
@@ -80,9 +80,11 @@ public class PrintableDetailsViewController implements Controller{
         imageViewController.initialize(imageName);
         imageViewRoot.prefWidth(GUIDefaults.IMAGE_DISPLAY_WIDTH);
         rowBox.getChildren().add(imageViewRoot);
+        HBox.setMargin(imageViewRoot, new Insets(10));
         if(rowBox.getChildren().size() == GUIDefaults.IMAGE_GRID_COLUMNS) {
           imageListView.getItems().add(rowBox);
-          rowBox = new HBox();
+          rowBox = setupImageBox();
+          rowBox.setAlignment(Pos.CENTER);
         }
 
       } catch (IOException e) {
@@ -100,6 +102,12 @@ public class PrintableDetailsViewController implements Controller{
       authorNameField.setText(author.getAuthorName());
       authorWebsiteField.setText(author.getWebsiteUrl());
     }
+  }
+
+  private HBox setupImageBox() {
+    HBox rowBox = new HBox();
+    rowBox.setAlignment(Pos.CENTER);
+    return rowBox;
   }
 
 }

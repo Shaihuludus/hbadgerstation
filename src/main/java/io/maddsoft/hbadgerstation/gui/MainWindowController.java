@@ -93,8 +93,8 @@ public class MainWindowController implements Controller {
   }
 
 
-  public void activateModeSwitcher(boolean actvate) {
-    if (actvate) {
+  public void activateModeSwitcher(boolean activate) {
+    if (activate) {
       modeSwitcher.getToggles().forEach(
           toggle -> ((ToggleButton)toggle).setDisable(false)
       );

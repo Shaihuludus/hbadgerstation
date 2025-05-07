@@ -5,6 +5,7 @@ import io.maddsoft.hbadgerstation.storage.ModelImporter;
 import java.io.File;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -20,6 +21,7 @@ public class AddPrintableController implements Controller{
   @FXML private TextField authorField;
 
   @FXML private Button importButton;
+  @FXML private CheckBox rootDirectoryCheckbox;
 
   private File chosenDirectory;
 
@@ -45,7 +47,7 @@ public class AddPrintableController implements Controller{
   public void importPrintableAction(){
     String authorName = StringUtils.isNotBlank(authorField.textProperty().getValue()) ? authorField.textProperty().getValue().trim() : AuthorImporter.DEFAULT_AUTHOR_NAME;
     if (chosenDirectory != null) {
-      new ModelImporter(chosenDirectory, authorName).importModel();
+      new ModelImporter(chosenDirectory, authorName, rootDirectoryCheckbox.isSelected()).importModels();
       parent.refreshDataViews();
       ((Stage) importButton.getScene().getWindow()).close();
     }

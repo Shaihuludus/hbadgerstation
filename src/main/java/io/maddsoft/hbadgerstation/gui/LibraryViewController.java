@@ -2,34 +2,40 @@ package io.maddsoft.hbadgerstation.gui;
 
 import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement;
 import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement.PrintableThingTableElementConverter;
+import io.maddsoft.hbadgerstation.gui.gridview.CustomGridViewSkin;
+import io.maddsoft.hbadgerstation.gui.gridview.GridCellController;
+import io.maddsoft.hbadgerstation.gui.gridview.GridCellSelectionController;
+import io.maddsoft.hbadgerstation.gui.printableview.PrintableViewController;
+import io.maddsoft.hbadgerstation.gui.gridview.GridViewSelectManager;
 import io.maddsoft.hbadgerstation.storage.DatabaseManager;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import javafx.collections.FXCollections;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import lombok.extern.slf4j.Slf4j;
+import org.controlsfx.control.GridCell;
+import org.controlsfx.control.GridView;
 
 @Slf4j
-public class LibraryViewController implements Controller{
+public class LibraryViewController implements GridCellSelectionController {
 
-  @FXML private TableView<PrintableThingTableElement> libraryView;
-  @FXML private TableColumn<PrintableThingTableElement, String> nameColumn;
-  @FXML private TableColumn<PrintableThingTableElement, String> authorColumn;
-  @FXML private TableColumn<PrintableThingTableElement, String> previewColumn;
-  @FXML private TableColumn<PrintableThingTableElement, String> pathColumn;
-  @FXML private TableColumn<PrintableThingTableElement, String> typeColumn;
+  private GridView<VBox> libraryView;
   @FXML private VBox librarySidebar;
   @FXML private Button openExplorerButton ;
+  @FXML private ScrollPane libraryParent;
 
   private final DatabaseManager databaseManager = new DatabaseManager();
 
@@ -37,26 +43,41 @@ public class LibraryViewController implements Controller{
 
   private PrintableThingTableElement selectedItem;
 
+  private final GridViewSelectManager gridViewSelectManager = new GridViewSelectManager();
+
   @FXML
   private void initialize() {
-    SplitPane.setResizableWithParent(libraryView, false);
+    gridViewSelectManager.addGridControllerToNotify(this);
     SplitPane.setResizableWithParent(librarySidebar, false);
 
-    nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-    authorColumn.setCellValueFactory(new PropertyValueFactory<>("authorName"));
-    pathColumn.setCellValueFactory(new PropertyValueFactory<>("directoryPath"));
-    typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
-    previewColumn.setCellValueFactory(new PropertyValueFactory<>("previewImageView"));
-    libraryView.getItems().setAll(databaseManager.getPrintableThings().stream().map(
-        PrintableThingTableElementConverter::convert).toList());
+    libraryView = new GridView<>(FXCollections.observableArrayList(prepareLibraryView()));
+    libraryParent.setContent(libraryView);
+    SplitPane.setResizableWithParent(libraryView, false);
+    libraryView.setCellHeight(400);
+    libraryView.setCellWidth(400);
+    libraryView.setSkin(new CustomGridViewSkin<>(libraryView));
+    libraryView.setCellFactory(new GridViewGridCellCallback());
+    prepareLibraryView();
+  }
 
-    libraryView.getSelectionModel().selectedItemProperty()
-        .addListener((_, _, selectedRow) -> {
-          parent.activateModeSwitcher(selectedRow != null);
-          openExplorerButton.setDisable(selectedRow == null);
-          parent.setNitriteId(selectedRow != null ? selectedRow.getPrintableThingId() : null);
-          selectedItem = selectedRow;
-        });
+  private List<VBox> prepareLibraryView() {
+    return databaseManager.getPrintableThings().stream()
+        .map(PrintableThingTableElementConverter::convert).map(printableThingTableElement -> {
+          FXMLLoader fxmlLoader = new FXMLLoader();
+          fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/printableView.fxml"));
+          try {
+            VBox imageViewRoot = fxmlLoader.load();
+            PrintableViewController imageViewController = fxmlLoader.getController();
+            imageViewRoot.setOnMouseClicked(imageViewController::onMouseClicked);
+            imageViewController.initialize(printableThingTableElement, gridViewSelectManager);
+            imageViewRoot.prefWidth(GUIDefaults.IMAGE_DISPLAY_WIDTH);
+            return imageViewRoot;
+            } catch (IOException e) {
+            log.error(e.getMessage());
+          }
+          return null;
+        }).toList();
+
   }
 
   @Override
@@ -90,7 +111,48 @@ public class LibraryViewController implements Controller{
   @Override
   public void refreshDataViews() {
     libraryView.getItems().clear();
-    libraryView.getItems().addAll(databaseManager.getPrintableThings().stream().map(
-        PrintableThingTableElementConverter::convert).toList());
+    libraryView.setItems(FXCollections.observableArrayList(prepareLibraryView()));
+  }
+
+  @Override
+  public void selectedCell(GridCellController controller) {
+    selectedItem = ((PrintableViewController) controller).getPrintableThingTableElement();
+    parent.activateModeSwitcher(selectedItem != null);
+    if (selectedItem != null) {
+      parent.setNitriteId(selectedItem.getPrintableThingId());
+    }
+  }
+
+  private static class GridViewGridCellCallback implements
+      Callback<GridView<VBox>, GridCell<VBox>> {
+
+    @Override
+    public GridCell<VBox> call(
+        GridView<VBox> printableThingTableElementGridView) {
+      return new GridCell<>() {
+
+        @Override
+        public void updateIndex(int i) {
+          if (i != -1) {
+            super.updateIndex(i);
+          }
+        }
+
+        @Override
+        protected void updateItem(VBox vbox, boolean empty) {
+          super.updateItem(vbox, empty);
+          if (empty) {
+            setText(null);
+            setGraphic(null);
+          } else if (vbox != null) {
+            setText(null);
+            setGraphic(vbox);
+          } else {
+            setText("null");
+            setGraphic(null);
+          }
+        }
+      };
+    }
   }
 }

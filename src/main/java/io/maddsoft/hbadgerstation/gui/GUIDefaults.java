@@ -4,13 +4,15 @@ public class GUIDefaults {
 
   public static final String DEFAULT_IMAGE = "/default-placeholder.png";
 
-  public static final int IMAGE_MINIATURE_WIDTH = 120;
+  public static final int PRINTABLE_IMAGE_MINIATURE_WIDTH = 250;
 
   public static final int IMAGE_DISPLAY_WIDTH = 500;
 
   public static final int IMAGE_GRID_COLUMNS = 3;
 
-  public static final int IMAGE_GRID_LOAD_ROWS = 5;
+  public static final int PRINTABLE_GRID_COLUMNS = 4;
+
+  public static final String DRACULA_SELECTED_BACKGROUND = "-fx-background-color: rgba(149, 128, 255, 0.1);";
 
   private GUIDefaults() {}
 }

@@ -20,9 +20,11 @@ public class ModelImporter {
   private final Set<String> printableFilesExtensions;
   private final Set<String> imagesExtensions;
 
-  private final List<String> printableFiles = new ArrayList<>();
-  private final List<String> images = new ArrayList<>();
-  private final List<String> otherFiles = new ArrayList<>();
+  private  List<String> printableFiles = new ArrayList<>();
+  private List<String> images = new ArrayList<>();
+  private List<String> otherFiles = new ArrayList<>();
+
+  private boolean root = false;
 
   public ModelImporter(File directory, String authorName) {
     this.directory = directory;
@@ -31,13 +33,32 @@ public class ModelImporter {
     imagesExtensions = Settings.getSet("file types","images");
   }
 
-  public void importModel() {
+  public ModelImporter(File directory, String authorName, boolean root) {
+    this(directory, authorName);
+    this.root = root;
+  }
+
+  public void importModels() {
+    if (root) {
+      File[] subFiles = directory.listFiles();
+      if (subFiles != null && subFiles.length > 0) {
+        Arrays.stream(subFiles).filter(File::isDirectory).forEach(this::importModel);
+      }
+    } else {
+      importModel(directory);
+    }
+  }
+
+  private void importModel(File modelDirectory) {
+    printableFiles = new ArrayList<>();
+    images = new ArrayList<>();
+    otherFiles = new ArrayList<>();
     new AuthorImporter(authorName, "").importAuthor();
-    prepareFiles(directory);
+    prepareFiles(modelDirectory);
     PrintableThing.PrintableThingBuilder builder = PrintableThing.builder();
-    builder.name(directory.getName());
+    builder.name(modelDirectory.getName());
     builder.authorName(authorName);
-    builder.directoryPath(directory.getAbsolutePath());
+    builder.directoryPath(modelDirectory.getAbsolutePath());
     builder.directory(true);
     builder.printFilenames(printableFiles);
     builder.images(images);
@@ -46,8 +67,8 @@ public class ModelImporter {
     databaseManager.addPrintableThing(builder.build());
   }
 
-  private void prepareFiles(File directory) {
-    File[] files = directory.listFiles();
+  private void prepareFiles(File subDirectory) {
+    File[] files = subDirectory.listFiles();
     if (files != null) {
       Arrays.stream(files).forEach(file -> {
         if (file.isDirectory()) {

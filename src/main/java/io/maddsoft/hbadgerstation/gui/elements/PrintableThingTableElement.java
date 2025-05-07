@@ -1,19 +1,18 @@
 package io.maddsoft.hbadgerstation.gui.elements;
 
-import io.maddsoft.hbadgerstation.gui.GUIDefaults;
 import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.Objects;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import lombok.Getter;
+import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 import org.dizitart.no2.collection.NitriteId;
 
+@ToString
 @Getter
 public class PrintableThingTableElement {
 
-  private final ImageView previewImageView;
+  private final String previewImage;
 
   private String name;
 
@@ -26,16 +25,12 @@ public class PrintableThingTableElement {
   private String type;
 
   public PrintableThingTableElement(String imagePath, String name, String authorName, String directoryPath, String type, NitriteId id) {
-    previewImageView = new ImageView(new Image(imagePath));
-    previewImageView.setFitWidth(GUIDefaults.IMAGE_MINIATURE_WIDTH);
-    previewImageView.setPreserveRatio(true);
+    this.previewImage = imagePath;
     initialize(name, authorName, directoryPath, type, id);
   }
 
   public PrintableThingTableElement(String name, String authorName, String directoryPath, String type, NitriteId id) {
-      previewImageView = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream(GUIDefaults.DEFAULT_IMAGE))));
-      previewImageView.setFitWidth(GUIDefaults.IMAGE_MINIATURE_WIDTH);
-      previewImageView.setPreserveRatio(true);
+      previewImage = StringUtils.EMPTY;
       initialize(name, authorName, directoryPath, type, id);
   }
 

@@ -109,6 +109,11 @@ public class LibraryViewController implements GridCellSelectionController {
   }
 
   @Override
+  public void performAction() {
+    parent.getDetailsModeButton().setSelected(true);
+  }
+
+  @Override
   public void refreshDataViews() {
     libraryView.getItems().clear();
     libraryView.setItems(FXCollections.observableArrayList(prepareLibraryView()));

@@ -4,7 +4,6 @@ import io.maddsoft.hbadgerstation.gui.GUIDefaults;
 import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement;
 import io.maddsoft.hbadgerstation.gui.gridview.GridCellController;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewSelectManager;
-import java.net.MalformedURLException;
 import java.util.Objects;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -30,7 +29,7 @@ public class PrintableViewController extends GridCell<PrintableThingTableElement
   @Getter
   private PrintableThingTableElement printableThingTableElement;
 
-  public void initialize(PrintableThingTableElement printableThingTableElement, GridViewSelectManager gridViewSelectManager) throws MalformedURLException {
+  public void initialize(PrintableThingTableElement printableThingTableElement, GridViewSelectManager gridViewSelectManager) {
     this.printableThingTableElement = printableThingTableElement;
     this.gridViewSelectManager = gridViewSelectManager;
     imageView.setImage(
@@ -46,6 +45,9 @@ public class PrintableViewController extends GridCell<PrintableThingTableElement
 
   public void onMouseClicked(MouseEvent mouseEvent) {
     gridViewSelectManager.setPrintableViewSelected(this);
+    if (mouseEvent.getClickCount() >= 2) {
+      gridViewSelectManager.runControllersAction();
+    }
   }
 
   public void setBackgroundStyle(String style) {

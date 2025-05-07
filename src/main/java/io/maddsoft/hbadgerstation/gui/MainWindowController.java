@@ -24,6 +24,7 @@ public class MainWindowController implements Controller {
 
   @FXML private ToggleGroup modeSwitcher;
 
+  @Getter
   @FXML private ToggleButton detailsModeButton;
 
   @FXML private ToggleButton libraryModeButton;

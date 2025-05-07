@@ -6,4 +6,5 @@ public interface GridCellSelectionController extends Controller {
 
   void selectedCell(GridCellController controller);
 
+  void performAction();
 }

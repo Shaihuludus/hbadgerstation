@@ -32,8 +32,15 @@ public class GridViewSelectManager {
    }
   }
 
-  private void notifyControllers() {
-    controllerToNotify.forEach(controller -> controller.selectedCell(currentSelectedView) );
+  public void runControllersAction() {
+    controllerToNotify.forEach(GridCellSelectionController::performAction);
   }
+
+  private void notifyControllers() {
+    controllerToNotify.forEach(controller -> {
+      controller.selectedCell(currentSelectedView);
+    } );
+  }
+
 
 }

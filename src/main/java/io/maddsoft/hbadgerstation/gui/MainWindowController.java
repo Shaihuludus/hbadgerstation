@@ -37,6 +37,10 @@ public class MainWindowController implements Controller {
   @FXML
   private void initialize() throws IOException {
     libraryViewActivated();
+    modeSwitcher.selectedToggleProperty().addListener((_, oldVal, newVal) -> {
+      if (newVal == null)
+        oldVal.setSelected(true);
+    });
     libraryModeButton.selectedProperty().addListener((_, _, newValue) -> {
       if (Boolean.TRUE.equals(newValue)) {
         try {

@@ -79,7 +79,7 @@ public class LibraryViewController implements GridCellSelectionController {
             PrintableViewController imageViewController = fxmlLoader.getController();
             imageViewRoot.setOnMouseClicked(imageViewController::onMouseClicked);
             imageViewController.initialize(printableThingTableElement, gridViewSelectManager);
-            imageViewRoot.prefWidth(GUIDefaults.IMAGE_DISPLAY_WIDTH);
+            imageViewRoot.prefWidth(GUIDefaults.IMAGE_DISPLAY_SIZE);
             return imageViewRoot;
             } catch (IOException e) {
             log.error(e.getMessage());

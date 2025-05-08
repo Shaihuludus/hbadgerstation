@@ -1,5 +1,7 @@
 package io.maddsoft.hbadgerstation.gui.elements;
 
+import io.maddsoft.hbadgerstation.cache.ImageCache;
+import io.maddsoft.hbadgerstation.gui.GUIDefaults;
 import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -56,7 +58,7 @@ public class PrintableThingTableElement {
         return new PrintableThingTableElement(printableThing.getName(), printableThing.getAuthorName(),
             printableThing.getDirectoryPath(), printableThing.getType(), printableThing.getPrintableThingId());
       } else {
-        File imageFile = new File(printableThing.getImages().getFirst());
+        File imageFile = new File(ImageCache.getImageCache().getCachedImage(printableThing.getImages().getFirst(), GUIDefaults.PRINTABLE_IMAGE_MINIATURE_SIZE, GUIDefaults.PRINTABLE_IMAGE_MINIATURE_SIZE));
         try {
           String imageUrl = imageFile.toURI().toURL().toString();
           return new PrintableThingTableElement(imageUrl, printableThing.getName(),

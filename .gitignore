@@ -63,3 +63,4 @@ build/
 .DS_Store
 /library.db
 /test_database.db
+/cache/

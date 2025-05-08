@@ -36,7 +36,7 @@ public class PrintableViewController extends GridCell<PrintableThingTableElement
         StringUtils.isNotBlank(printableThingTableElement.getPreviewImage()) ?
             new Image(printableThingTableElement.getPreviewImage(), true) :
             new Image(Objects.requireNonNull(getClass().getResourceAsStream(GUIDefaults.DEFAULT_IMAGE))));
-    imageView.setFitWidth(GUIDefaults.PRINTABLE_IMAGE_MINIATURE_WIDTH);
+    imageView.setFitWidth(GUIDefaults.PRINTABLE_IMAGE_MINIATURE_SIZE);
     imageView.setPreserveRatio(true);
     printableName.setText(printableThingTableElement.getName());
     authorName.setText(printableThingTableElement.getAuthorName());

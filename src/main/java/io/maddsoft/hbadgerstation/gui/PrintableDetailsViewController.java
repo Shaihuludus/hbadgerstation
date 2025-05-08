@@ -78,7 +78,7 @@ public class PrintableDetailsViewController implements Controller{
         VBox imageViewRoot = fxmlLoader.load();
         ImageViewController imageViewController = fxmlLoader.getController();
         imageViewController.initialize(imageName);
-        imageViewRoot.prefWidth(GUIDefaults.IMAGE_DISPLAY_WIDTH);
+        imageViewRoot.prefWidth(GUIDefaults.IMAGE_DISPLAY_SIZE);
         rowBox.getChildren().add(imageViewRoot);
         HBox.setMargin(imageViewRoot, new Insets(10));
         if(rowBox.getChildren().size() == GUIDefaults.IMAGE_GRID_COLUMNS) {

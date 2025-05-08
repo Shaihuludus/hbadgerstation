@@ -14,6 +14,8 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class Settings {
 
+  public static final String SECTION_CACHE = "cache";
+
   private static final  Settings instance = new Settings();
 
   private final INIConfiguration iniConfiguration;

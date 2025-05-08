@@ -27,7 +27,9 @@ public class GridViewSelectManager {
        currentSelectedView.setBackgroundStyle("");
      }
      currentSelectedView = newSelectedView;
-     currentSelectedView.setBackgroundStyle(GUIDefaults.DRACULA_SELECTED_BACKGROUND);
+     if (currentSelectedView != null) {
+       currentSelectedView.setBackgroundStyle(GUIDefaults.DRACULA_SELECTED_BACKGROUND);
+     }
      notifyControllers();
    }
   }

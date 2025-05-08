@@ -12,14 +12,14 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import javafx.collections.FXCollections;
-
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.VBox;
@@ -32,6 +32,7 @@ import org.controlsfx.control.GridView;
 @Slf4j
 public class LibraryViewController implements GridCellSelectionController {
 
+  @FXML private Button deleteButton;
   private GridView<VBox> libraryView;
   @FXML private VBox librarySidebar;
   @FXML private Button openExplorerButton ;
@@ -61,12 +62,14 @@ public class LibraryViewController implements GridCellSelectionController {
   }
 
   private List<VBox> prepareLibraryView() {
+    AtomicInteger tempPosition = new AtomicInteger();
     return databaseManager.getPrintableThings().stream()
         .map(PrintableThingTableElementConverter::convert).map(printableThingTableElement -> {
           FXMLLoader fxmlLoader = new FXMLLoader();
           fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/printableView.fxml"));
           try {
             VBox imageViewRoot = fxmlLoader.load();
+            printableThingTableElement.setListPosition(tempPosition.getAndIncrement());
             PrintableViewController imageViewController = fxmlLoader.getController();
             imageViewRoot.setOnMouseClicked(imageViewController::onMouseClicked);
             imageViewController.initialize(printableThingTableElement, gridViewSelectManager);
@@ -121,11 +124,28 @@ public class LibraryViewController implements GridCellSelectionController {
 
   @Override
   public void selectedCell(GridCellController controller) {
-    selectedItem = ((PrintableViewController) controller).getPrintableThingTableElement();
+    if (controller == null) {
+      selectedItem = null;
+    }  else {
+      selectedItem = ((PrintableViewController) controller).getPrintableThingTableElement();
+    }
     parent.activateModeSwitcher(selectedItem != null);
+    deleteButton.setDisable(selectedItem == null);
     if (selectedItem != null) {
       parent.setNitriteId(selectedItem.getPrintableThingId());
     }
+  }
+
+  public void deletePrintable() {
+    databaseManager.deletePrintableThing(selectedItem.getPrintableThingId());
+    refreshDataViews();
+    ObservableList<VBox> items = libraryView.getItems();
+    if(!items.isEmpty()){
+      EventsCreator.fireMouseClicked(libraryView.getItems().get(selectedItem.getListPosition() < items.size() ? selectedItem.getListPosition() : selectedItem.getListPosition()-1 ));
+    } else {
+      gridViewSelectManager.setPrintableViewSelected(null);
+    }
+
   }
 
   private static class GridViewGridCellCallback implements

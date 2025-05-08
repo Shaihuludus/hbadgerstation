@@ -8,6 +8,7 @@ import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
 import io.maddsoft.hbadgerstation.storage.entities.PrintableThing.PrintableConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.Nitrite;
+import org.dizitart.no2.collection.NitriteId;
 import org.dizitart.no2.mvstore.MVStoreModule;
 import org.dizitart.no2.common.mapper.SimpleNitriteMapper;
 import org.dizitart.no2.repository.ObjectRepository;
@@ -59,6 +60,10 @@ log.info("Opening Nitrite DB...");
       openDb();
     }
     return db.getRepository(Author.class);
+  }
+
+  public void deletePrintableThing(NitriteId id) {
+    getPrintableThingRepository().remove(PrintableThing.builder().printableThingId(id).build());
   }
 
   public void closeDb() {

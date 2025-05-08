@@ -68,4 +68,8 @@ public class DatabaseManager {
   public PrintableThing getPrintableThingById(NitriteId nitriteId) {
     return nitriteManager.getPrintableThingRepository().getById(nitriteId);
   }
+
+  public void deletePrintableThing(NitriteId id) {
+    nitriteManager.deletePrintableThing(id);
+  }
 }

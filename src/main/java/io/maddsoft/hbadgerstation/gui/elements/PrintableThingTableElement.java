@@ -4,6 +4,7 @@ import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
 import java.io.File;
 import java.net.MalformedURLException;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import org.dizitart.no2.collection.NitriteId;
@@ -23,6 +24,9 @@ public class PrintableThingTableElement {
   private String directoryPath;
 
   private String type;
+
+  @Setter
+  private int listPosition;
 
   public PrintableThingTableElement(String imagePath, String name, String authorName, String directoryPath, String type, NitriteId id) {
     this.previewImage = imagePath;

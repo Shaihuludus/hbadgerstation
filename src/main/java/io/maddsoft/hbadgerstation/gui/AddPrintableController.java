@@ -38,6 +38,12 @@ public class AddPrintableController implements Controller{
   public void openFileChooser() {
     DirectoryChooser directoryChooser = new DirectoryChooser();
     directoryChooser.setTitle("Select a directory");
+    if (parent instanceof LibraryViewController libraryViewController){
+      File currentDirectory = libraryViewController.getCurrentDirectory();
+      if (currentDirectory != null){
+        directoryChooser.setInitialDirectory(currentDirectory);
+      }
+    }
     chosenDirectory = directoryChooser.showDialog(pathField.getScene().getWindow());
     if (chosenDirectory != null) {
       pathField.setText(chosenDirectory.getAbsolutePath());
@@ -47,6 +53,9 @@ public class AddPrintableController implements Controller{
   public void importPrintableAction(){
     String authorName = StringUtils.isNotBlank(authorField.textProperty().getValue()) ? authorField.textProperty().getValue().trim() : AuthorImporter.DEFAULT_AUTHOR_NAME;
     if (chosenDirectory != null) {
+      if (parent instanceof LibraryViewController libraryViewController){
+        libraryViewController.setCurrentDirectory(chosenDirectory);
+      }
       new ModelImporter(chosenDirectory, authorName, rootDirectoryCheckbox.isSelected()).importModels();
       parent.refreshDataViews();
       ((Stage) importButton.getScene().getWindow()).close();

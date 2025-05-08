@@ -25,6 +25,8 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.controlsfx.control.GridCell;
 import org.controlsfx.control.GridView;
@@ -45,6 +47,10 @@ public class LibraryViewController implements GridCellSelectionController {
   private PrintableThingTableElement selectedItem;
 
   private final GridViewSelectManager gridViewSelectManager = new GridViewSelectManager();
+
+  @Getter
+  @Setter
+  private File currentDirectory;
 
   @FXML
   private void initialize() {

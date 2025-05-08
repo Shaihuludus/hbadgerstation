@@ -1,6 +1,8 @@
 package io.maddsoft.hbadgerstation.storage;
 
 import io.maddsoft.hbadgerstation.Settings;
+import io.maddsoft.hbadgerstation.cache.ImageCache;
+import io.maddsoft.hbadgerstation.gui.GUIDefaults;
 import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
 import java.io.File;
 import java.util.ArrayList;
@@ -65,6 +67,16 @@ public class ModelImporter {
     builder.otherFiles(otherFiles);
 
     databaseManager.addPrintableThing(builder.build());
+    fillImageCache();
+  }
+
+  private void fillImageCache() {
+    if (Settings.getInt(Settings.SECTION_CACHE, "cacheWhenImport", 1) == 1) {
+      images.forEach(image -> ImageCache.getImageCache().getCachedImage(image, GUIDefaults.IMAGE_DISPLAY_SIZE, GUIDefaults.IMAGE_DISPLAY_SIZE));
+      if (!images.isEmpty()) {
+        ImageCache.getImageCache().getCachedImage(images.getFirst(), GUIDefaults.PRINTABLE_IMAGE_MINIATURE_SIZE, GUIDefaults.PRINTABLE_IMAGE_MINIATURE_SIZE);
+      }
+    }
   }
 
   private void prepareFiles(File subDirectory) {

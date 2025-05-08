@@ -38,9 +38,6 @@ public class Settings {
     return instance.iniConfiguration.getSection(section).getInt(key);
   }
 
-  public static boolean getBoolean(String section, String key) {
-    return instance.iniConfiguration.getSection(section).getBoolean(key);
-  }
 
   public static String getString(String section, String key, String defaultValue) {
     return instance.iniConfiguration.getSection(section).getString(key, defaultValue);
@@ -48,10 +45,6 @@ public class Settings {
 
   public static int getInt(String section, String key, int defaultValue) {
     return instance.iniConfiguration.getSection(section).getInt( key, defaultValue);
-  }
-
-  public static boolean getBoolean(String section, String key, boolean defaultValue) {
-    return instance.iniConfiguration.getSection(section).getBoolean(key, defaultValue);
   }
 
   public static Set<String> getSet(String section, String key) {

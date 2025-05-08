@@ -15,13 +15,15 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollToEvent;
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -35,10 +37,10 @@ import org.controlsfx.control.GridView;
 public class LibraryViewController implements GridCellSelectionController {
 
   @FXML private Button deleteButton;
-  private GridView<VBox> libraryView;
+  @FXML private GridView<VBox> libraryView;
   @FXML private VBox librarySidebar;
   @FXML private Button openExplorerButton ;
-  @FXML private ScrollPane libraryParent;
+  @FXML private AnchorPane libraryParent;
 
   private final DatabaseManager databaseManager = new DatabaseManager();
 
@@ -57,8 +59,7 @@ public class LibraryViewController implements GridCellSelectionController {
     gridViewSelectManager.addGridControllerToNotify(this);
     SplitPane.setResizableWithParent(librarySidebar, false);
 
-    libraryView = new GridView<>(FXCollections.observableArrayList(prepareLibraryView()));
-    libraryParent.setContent(libraryView);
+    libraryView.setItems(FXCollections.observableArrayList(prepareLibraryView()));
     SplitPane.setResizableWithParent(libraryView, false);
     libraryView.setCellHeight(400);
     libraryView.setCellWidth(400);
@@ -148,6 +149,7 @@ public class LibraryViewController implements GridCellSelectionController {
     ObservableList<VBox> items = libraryView.getItems();
     if(!items.isEmpty()){
       EventsCreator.fireMouseClicked(libraryView.getItems().get(selectedItem.getListPosition() < items.size() ? selectedItem.getListPosition() : selectedItem.getListPosition()-1 ));
+      Event.fireEvent(libraryView, new ScrollToEvent(libraryView, libraryView, ScrollToEvent.scrollToTopIndex(), libraryView.getItems().size()));
     } else {
       gridViewSelectManager.setPrintableViewSelected(null);
     }

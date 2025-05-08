@@ -51,7 +51,6 @@ public class ImageCache {
   }
 
   private void scaleImage(String imageName, @NonNull File fileInCache, int width, int height) throws IOException {
-    System.out.println("Scaling " + fileInCache.getAbsolutePath());
     BufferedImage originalImage = ImageIO.read(new File(imageName));
     BufferedImage resizedImage = Scalr.resize(originalImage, Mode.AUTOMATIC, width, height);
     ImageIO.write(resizedImage, "jpg", fileInCache);

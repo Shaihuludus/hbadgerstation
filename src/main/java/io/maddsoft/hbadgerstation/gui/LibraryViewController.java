@@ -15,15 +15,12 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollToEvent;
 import javafx.scene.control.SplitPane;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -40,7 +37,6 @@ public class LibraryViewController implements GridCellSelectionController {
   @FXML private GridView<VBox> libraryView;
   @FXML private VBox librarySidebar;
   @FXML private Button openExplorerButton ;
-  @FXML private AnchorPane libraryParent;
 
   private final DatabaseManager databaseManager = new DatabaseManager();
 
@@ -149,11 +145,18 @@ public class LibraryViewController implements GridCellSelectionController {
     ObservableList<VBox> items = libraryView.getItems();
     if(!items.isEmpty()){
       EventsCreator.fireMouseClicked(libraryView.getItems().get(selectedItem.getListPosition() < items.size() ? selectedItem.getListPosition() : selectedItem.getListPosition()-1 ));
-      Event.fireEvent(libraryView, new ScrollToEvent(libraryView, libraryView, ScrollToEvent.scrollToTopIndex(), libraryView.getItems().size()));
+      EventsCreator.fireScrollToIndexEvent(libraryView, calculateItemIndex((CustomGridViewSkin<?>) libraryView.getSkin(), selectedItem.getListPosition()));
     } else {
       gridViewSelectManager.setPrintableViewSelected(null);
     }
+  }
 
+  public void scrollToLastCell() {
+    EventsCreator.fireScrollToIndexEvent(libraryView, calculateItemIndex((CustomGridViewSkin<?>) libraryView.getSkin(), selectedItem.getListPosition()));
+  }
+
+  public void selectLastCell() {
+    EventsCreator.fireMouseClicked(libraryView.getItems().getLast());
   }
 
   private static class GridViewGridCellCallback implements

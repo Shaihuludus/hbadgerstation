@@ -1,5 +1,6 @@
 package io.maddsoft.hbadgerstation.gui;
 
+import io.maddsoft.hbadgerstation.gui.gridview.GridCellSelectionController;
 import io.maddsoft.hbadgerstation.storage.AuthorImporter;
 import io.maddsoft.hbadgerstation.storage.ModelImporter;
 import java.io.File;
@@ -58,6 +59,10 @@ public class AddPrintableController implements Controller{
       }
       new ModelImporter(chosenDirectory, authorName, rootDirectoryCheckbox.isSelected()).importModels();
       parent.refreshDataViews();
+      if (parent instanceof GridCellSelectionController gridCellSelectionController){
+        gridCellSelectionController.selectLastCell();
+        gridCellSelectionController.scrollToLastCell();
+      }
       ((Stage) importButton.getScene().getWindow()).close();
     }
   }

@@ -5,6 +5,7 @@ import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement.Printa
 import io.maddsoft.hbadgerstation.gui.gridview.CustomGridViewSkin;
 import io.maddsoft.hbadgerstation.gui.gridview.GridCellController;
 import io.maddsoft.hbadgerstation.gui.gridview.GridCellSelectionController;
+import io.maddsoft.hbadgerstation.gui.gridview.GridViewGridCellCallback;
 import io.maddsoft.hbadgerstation.gui.printableview.PrintableViewController;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewSelectManager;
 import io.maddsoft.hbadgerstation.storage.DatabaseManager;
@@ -23,11 +24,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.controlsfx.control.GridCell;
 import org.controlsfx.control.GridView;
 
 @Slf4j
@@ -159,36 +158,14 @@ public class LibraryViewController implements GridCellSelectionController {
     EventsCreator.fireMouseClicked(libraryView.getItems().getLast());
   }
 
-  private static class GridViewGridCellCallback implements
-      Callback<GridView<VBox>, GridCell<VBox>> {
+  public void scrollToFirstCell() {
+    EventsCreator.fireScrollToIndexEvent(libraryView,0);
+  }
 
-    @Override
-    public GridCell<VBox> call(
-        GridView<VBox> printableThingTableElementGridView) {
-      return new GridCell<>() {
-
-        @Override
-        public void updateIndex(int i) {
-          if (i != -1) {
-            super.updateIndex(i);
-          }
-        }
-
-        @Override
-        protected void updateItem(VBox vbox, boolean empty) {
-          super.updateItem(vbox, empty);
-          if (empty) {
-            setText(null);
-            setGraphic(null);
-          } else if (vbox != null) {
-            setText(null);
-            setGraphic(vbox);
-          } else {
-            setText("null");
-            setGraphic(null);
-          }
-        }
-      };
+  public void postConstruct() {
+    if (!libraryView.getItems().isEmpty()) {
+      EventsCreator.fireMouseClicked(libraryView.getItems().getFirst());
+      scrollToFirstCell();
     }
   }
 }

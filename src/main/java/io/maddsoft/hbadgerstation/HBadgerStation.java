@@ -1,5 +1,6 @@
 package io.maddsoft.hbadgerstation;
 
+import io.maddsoft.hbadgerstation.gui.MainWindowController;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -15,11 +16,14 @@ public class HBadgerStation extends Application {
   @Override
   public void start(Stage stage) throws IOException {
     Application.setUserAgentStylesheet("dracula.css");
-    scene = new Scene(loadFXML("mainwindow"));
+    FXMLLoader fxmlLoader = new FXMLLoader(HBadgerStation.class.getResource( "mainwindow.fxml"));
+    Parent loaded = fxmlLoader.load();
+    scene = new Scene(loaded);
     stage.setScene(scene);
     stage.setMaximized(true);
     stage.setOnCloseRequest(e -> Platform.exit());
     stage.show();
+    ((MainWindowController) fxmlLoader.getController()).postConstruct();
   }
 
   static void setRoot(String fxml) throws IOException {

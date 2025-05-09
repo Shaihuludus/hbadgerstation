@@ -1,5 +1,6 @@
 package io.maddsoft.hbadgerstation.gui;
 
+import io.maddsoft.hbadgerstation.gui.details.PrintableDetailsViewController;
 import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -34,6 +35,8 @@ public class MainWindowController implements Controller {
 
   private PrintableDetailsViewController detailsViewController;
 
+  private LibraryViewController libraryViewController;
+
   @FXML
   private void initialize() throws IOException {
     libraryViewActivated();
@@ -66,6 +69,9 @@ public class MainWindowController implements Controller {
     fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/libraryview.fxml"));
     if( libraryView == null ) {
       libraryView = createView(fxmlLoader);
+    }
+    if (libraryViewController == null) {
+      libraryViewController = fxmlLoader.getController();
     }
     addToView(libraryView);
   }
@@ -108,5 +114,9 @@ public class MainWindowController implements Controller {
           toggle -> ((ToggleButton) toggle).setDisable(true)
       );
     }
+  }
+
+  public void postConstruct() {
+    libraryViewController.postConstruct();
   }
 }

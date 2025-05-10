@@ -1,5 +1,9 @@
-package io.maddsoft.hbadgerstation.gui;
+package io.maddsoft.hbadgerstation.gui.library;
 
+import io.maddsoft.hbadgerstation.gui.Controller;
+import io.maddsoft.hbadgerstation.gui.EventsCreator;
+import io.maddsoft.hbadgerstation.gui.GUIDefaults;
+import io.maddsoft.hbadgerstation.gui.MainWindowController;
 import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement;
 import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement.PrintableThingTableElementConverter;
 import io.maddsoft.hbadgerstation.gui.gridview.CustomGridViewSkin;
@@ -9,6 +13,7 @@ import io.maddsoft.hbadgerstation.gui.gridview.GridViewGridCellCallback;
 import io.maddsoft.hbadgerstation.gui.printableview.PrintableViewController;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewSelectManager;
 import io.maddsoft.hbadgerstation.storage.DatabaseManager;
+import io.maddsoft.hbadgerstation.storage.FilterCollection;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +26,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.SplitPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Getter;
@@ -45,6 +49,8 @@ public class LibraryViewController implements GridCellSelectionController {
 
   private final GridViewSelectManager gridViewSelectManager = new GridViewSelectManager();
 
+  private LibraryFiltersController filtersController;
+
   @Getter
   @Setter
   private File currentDirectory;
@@ -52,20 +58,32 @@ public class LibraryViewController implements GridCellSelectionController {
   @FXML
   private void initialize() {
     gridViewSelectManager.addGridControllerToNotify(this);
-    SplitPane.setResizableWithParent(librarySidebar, false);
 
-    libraryView.setItems(FXCollections.observableArrayList(prepareLibraryView()));
-    SplitPane.setResizableWithParent(libraryView, false);
+    libraryView.setItems(FXCollections.observableArrayList(prepareLibraryView(
+        new FilterCollection())));
     libraryView.setCellHeight(400);
     libraryView.setCellWidth(400);
     libraryView.setSkin(new CustomGridViewSkin<>(libraryView));
     libraryView.setCellFactory(new GridViewGridCellCallback());
-    prepareLibraryView();
+    setupFilters();
   }
 
-  private List<VBox> prepareLibraryView() {
+  private void setupFilters() {
+    FXMLLoader fxmlLoader = new FXMLLoader();
+    fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/libraryfiltersview.fxml"));
+    try {
+      librarySidebar.getChildren().add(fxmlLoader.load());
+      filtersController = fxmlLoader.getController();
+      filtersController.setParent(this);
+
+    } catch (IOException e) {
+      log.error(e.getMessage(), e);
+    }
+  }
+
+  private List<VBox> prepareLibraryView(FilterCollection filterCollection) {
     AtomicInteger tempPosition = new AtomicInteger();
-    return databaseManager.getPrintableThings().stream()
+    return databaseManager.getPrintableThings(filterCollection).stream()
         .map(PrintableThingTableElementConverter::convert).map(printableThingTableElement -> {
           FXMLLoader fxmlLoader = new FXMLLoader();
           fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/printableView.fxml"));
@@ -121,7 +139,8 @@ public class LibraryViewController implements GridCellSelectionController {
   @Override
   public void refreshDataViews() {
     libraryView.getItems().clear();
-    libraryView.setItems(FXCollections.observableArrayList(prepareLibraryView()));
+    libraryView.setItems(FXCollections.observableArrayList(prepareLibraryView(
+        filtersController.getFilterCollection())));
   }
 
   @Override

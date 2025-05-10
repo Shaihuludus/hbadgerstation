@@ -15,7 +15,6 @@ import org.dizitart.no2.repository.annotations.Index;
 @Getter
 @Setter
 @Builder
-@ToString
 @Entity(value = "authors", indices = {
     @Index(fields = "authorName"),
 })
@@ -26,6 +25,10 @@ public class Author {
 
   private String websiteUrl;
 
+  @Override
+  public String toString() {
+    return authorName;
+  }
 
   public static class AuthorConverter implements EntityConverter<Author> {
 

@@ -5,7 +5,6 @@ import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.collection.NitriteId;
-import org.dizitart.no2.common.WriteResult;
 import org.dizitart.no2.exceptions.NitriteException;
 
 @Slf4j
@@ -17,23 +16,20 @@ public class DatabaseManager {
     nitriteManager = NitriteManager.getInstance();
   }
 
-  public boolean addAuthor(Author author) {
+  public void addAuthor(Author author) {
     try {
       nitriteManager.getAuthorRepository().insert(author);
-      return true;
     } catch (NitriteException e) {
       log.error(e.getMessage());
     }
-      return false;
   }
 
-  public WriteResult addPrintableThing(PrintableThing printableThing) {
+  public void addPrintableThing(PrintableThing printableThing) {
     try {
-      return nitriteManager.getPrintableThingRepository().insert(printableThing);
+      nitriteManager.getPrintableThingRepository().insert(printableThing);
     } catch (NitriteException e) {
       log.error(e.getMessage());
     }
-    return null;
   }
 
   public boolean addAuthor(String authorName, String websiteUrl) {
@@ -53,7 +49,10 @@ public class DatabaseManager {
     nitriteManager.closeDb();
   }
 
-  public List<PrintableThing> getPrintableThings() {
+  public List<PrintableThing> getPrintableThings(FilterCollection filterCollection) {
+    if (filterCollection.isFiltering()) {
+      return nitriteManager.getPrintableThingRepository().find(filterCollection.filtersToQuery()).toList();
+    }
     return nitriteManager.getPrintableThingRepository().find().toList();
   }
 

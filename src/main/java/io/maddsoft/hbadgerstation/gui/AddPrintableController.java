@@ -1,6 +1,7 @@
 package io.maddsoft.hbadgerstation.gui;
 
 import io.maddsoft.hbadgerstation.gui.gridview.GridCellSelectionController;
+import io.maddsoft.hbadgerstation.gui.library.LibraryViewController;
 import io.maddsoft.hbadgerstation.storage.AuthorImporter;
 import io.maddsoft.hbadgerstation.storage.ModelImporter;
 import java.io.File;

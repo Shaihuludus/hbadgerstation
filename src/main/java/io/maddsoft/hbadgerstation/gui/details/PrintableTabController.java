@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.controlsfx.glyphfont.Glyph;
 public class PrintableTabController implements Controller {
 
   @FXML private TreeView<PrintableTextPath> printableTree;
+  @FXML private Button openButton;
 
   private String directoryPath;
 
@@ -32,6 +34,13 @@ public class PrintableTabController implements Controller {
     printableTree.setRoot(new TreeItem<>(new PrintableTextPath(root, directoryPath), new Glyph("FontAwesome", FontAwesome.Glyph.FOLDER)));
     printableFiles.forEach(this::createTreePath);
     printableTree.getRoot().setExpanded(true);
+    printableTree.getSelectionModel().selectedItemProperty().addListener((_, oldValue, newValue) -> {
+      activate();
+    });
+  }
+
+  private void activate() {
+    openButton.setDisable(false);
   }
 
   private void createTreePath(String printableFilePath) {
@@ -65,9 +74,13 @@ public class PrintableTabController implements Controller {
     }
   }
 
-  private void openPrintableFile(String fileName) {
+  public void openPrintableFile() {
     try {
-      Desktop.getDesktop().open(new File(fileName));
+      TreeItem<PrintableTextPath> selectedItem = printableTree.getSelectionModel()
+          .getSelectedItem();
+      if(selectedItem != null) {
+        Desktop.getDesktop().open(new File(selectedItem.getValue().getPath()));
+      }
     } catch (IOException e) {
       log.error(e.getMessage(), e);
     }

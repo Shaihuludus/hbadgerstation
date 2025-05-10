@@ -86,7 +86,7 @@ public class ModelImporter {
         if (file.isDirectory()) {
           prepareFiles(file);
         }
-        String extension = FilenameUtils.getExtension(file.getName());
+        String extension = FilenameUtils.getExtension(file.getName()).toLowerCase();
         if (printableFilesExtensions.contains(extension)) {
           printableFiles.add(file.getAbsolutePath());
         } else if (imagesExtensions.contains(extension)) {

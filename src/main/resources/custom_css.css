@@ -4,19 +4,7 @@
   -fx-background-insets: 0;
 }
 
-.lock-button {
-  -fx-background-image: url('padlock-unlock.png');
-  -fx-background-size: 25px 25px;
-  -fx-background-repeat: no-repeat;
-  -fx-background-position: center;
-}
 
-.lock-button:selected, .lock-button:selected:focused {
-  -fx-background-image: url('secured-lock.png');
-  -fx-background-size: 25px 25px;
-  -fx-background-repeat: no-repeat;
-  -fx-background-position: center;
-}
 
 .custom-border {
 -fx-border-style: solid inside;

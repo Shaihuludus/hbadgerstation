@@ -17,11 +17,15 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
+<?import org.controlsfx.glyphfont.Glyph?>
 <VBox prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.maddsoft.hbadgerstation.gui.details.PrintableDetailsViewController">
    <children>
-      <HBox alignment="TOP_RIGHT" prefHeight="40.0" prefWidth="600.0" VBox.vgrow="SOMETIMES">
+      <HBox alignment="TOP_RIGHT" prefHeight="52.0" prefWidth="600.0" VBox.vgrow="SOMETIMES" styleClass="custom-border" stylesheets="@../../../custom_css.css">
          <children>
-            <ToggleButton fx:id="lockButton" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="36.0" maxWidth="36.0" minWidth="36.0" mnemonicParsing="false" prefWidth="36.0" selected="true" styleClass="lock-button" stylesheets="@../../../custom_css.css">
+            <ToggleButton fx:id="lockButton" selected="true" stylesheets="@../../../dracula.css">
+              <graphic>
+                <Glyph fontFamily="FontAwesome" icon="LOCK" />
+              </graphic>
                <HBox.margin>
                   <Insets top="10.0" />
                </HBox.margin>
@@ -81,7 +85,7 @@
                   </GridPane>
                </content>
             </Tab>
-          <Tab text="Printable Files">
+          <Tab text="Printable Files" fx:id="printableTab">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
             </content>

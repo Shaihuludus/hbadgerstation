@@ -14,6 +14,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Region;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.controlsfx.glyphfont.FontAwesome;
+import org.controlsfx.glyphfont.Glyph;
 import org.dizitart.no2.collection.NitriteId;
 
 @Slf4j
@@ -27,13 +30,15 @@ public class PrintableDetailsViewController implements Controller {
   @FXML private TextField authorNameField;
   @FXML private TextField authorWebsiteField;
   @FXML private TextField directoryPathField;
+  @FXML private Tab imagesTab;
+  @FXML private Tab printableTab;
+
 
   private DatabaseManager databaseManager = new DatabaseManager();
 
   private PrintableThing printableThing;
   private Author author;
 
-  @FXML private Tab imagesTab;
 
   @FXML
   private void initialize() {
@@ -41,10 +46,12 @@ public class PrintableDetailsViewController implements Controller {
   }
 
   private void activateEdition(boolean lock) {
+    System.out.println(lock);
     nameField.setEditable(lock);
     descriptionField.setEditable(lock);
     authorWebsiteField.setEditable(lock);
     directoryPathField.setEditable(lock);
+    lockButton.setGraphic(!lock ? new Glyph("FontAwesome", FontAwesome.Glyph.LOCK) : new Glyph("FontAwesome", FontAwesome.Glyph.UNLOCK));
   }
 
   public void setup(NitriteId nitriteId) {
@@ -66,7 +73,21 @@ public class PrintableDetailsViewController implements Controller {
       } catch (IOException e) {
         log.error(e.getMessage(), e);
       }
+      try {
+        setupPrintableTab();
+      } catch (IOException e) {
+        log.error(e.getMessage(), e);
+      }
     }
+  }
+
+  private void setupPrintableTab() throws IOException {
+    FXMLLoader fxmlLoader = new FXMLLoader();
+    fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/details/printablestab.fxml"));
+    Region view = fxmlLoader.load();
+    PrintableTabController printableTabController = fxmlLoader.getController();
+    printableTabController.initialize(printableThing.getPrintFilenames(), StringUtils.stripEnd(printableThing.getDirectoryPath().replace("\\", "/"), "/"));
+    printableTab.setContent(view);
   }
 
   private void setupImageTab() throws IOException {

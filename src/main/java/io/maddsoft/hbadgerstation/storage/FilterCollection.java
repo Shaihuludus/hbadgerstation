@@ -11,12 +11,21 @@ public class FilterCollection {
 
   private final HashMap<String, List<String>> filters = new HashMap<>();
   private final HashMap<String, List<NitriteId>> notIdFilters = new HashMap<>();
+  private final HashMap<String, List<NitriteId>> idFilters = new HashMap<>();
 
   public void setFilter(String filterName, List<String> filterValues) {
     if (filterValues == null || filterValues.isEmpty()) {
      filters.remove(filterName);
     } else {
       filters.put(filterName, filterValues);
+    }
+  }
+
+  public void setIdFilter(String filterName, List<NitriteId> filterValues) {
+    if (filterValues == null || filterValues.isEmpty()) {
+      idFilters.remove(filterName);
+    } else {
+      idFilters.put(filterName, filterValues);
     }
   }
 
@@ -40,6 +49,18 @@ public class FilterCollection {
     NitriteFilter transformerdFilter = null;
     transformerdFilter = buildStringInFilters(transformerdFilter);
     transformerdFilter = buildNotInIdFilters(transformerdFilter);
+    transformerdFilter = buildInIdFilters(transformerdFilter);
+    return transformerdFilter;
+  }
+
+  private NitriteFilter buildInIdFilters(NitriteFilter transformerdFilter) {
+    for (Map.Entry<String, List<NitriteId>> entry: idFilters.entrySet()) {
+      if(transformerdFilter == null) {
+        transformerdFilter = FluentFilter.where(entry.getKey()).notIn(entry.getValue().toArray(new NitriteId[0]));
+      } else {
+        transformerdFilter = (NitriteFilter) transformerdFilter.and(FluentFilter.where(entry.getKey()).in(entry.getValue().toArray(new NitriteId[0])));
+      }
+    }
     return transformerdFilter;
   }
 

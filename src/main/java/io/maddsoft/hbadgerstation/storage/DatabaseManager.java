@@ -1,11 +1,12 @@
 package io.maddsoft.hbadgerstation.storage;
 
 import io.maddsoft.hbadgerstation.storage.entities.Author;
+import io.maddsoft.hbadgerstation.storage.entities.Collection;
 import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
-import java.util.HashMap;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.collection.NitriteId;
+import org.dizitart.no2.common.WriteResult;
 import org.dizitart.no2.exceptions.NitriteException;
 
 @Slf4j
@@ -25,12 +26,14 @@ public class DatabaseManager {
     }
   }
 
-  public void addPrintableThing(PrintableThing printableThing) {
+  public NitriteId addPrintableThing(PrintableThing printableThing) {
     try {
-      nitriteManager.getPrintableThingRepository().insert(printableThing);
+      WriteResult insert = nitriteManager.getPrintableThingRepository().insert(printableThing);
+      return insert.iterator().next();
     } catch (NitriteException e) {
       log.error(e.getMessage());
     }
+    return null;
   }
 
   public boolean addAuthor(String authorName, String websiteUrl) {
@@ -70,10 +73,33 @@ public class DatabaseManager {
   }
 
   public void deletePrintableThing(NitriteId id) {
-    nitriteManager.deletePrintableThing(id);
+    nitriteManager. getPrintableThingRepository().remove(PrintableThing.builder().printableThingId(id).build());
   }
 
   public void updatePrintableThing(PrintableThing printableThing) {
     nitriteManager.getPrintableThingRepository().update(printableThing);
+  }
+
+  public Collection getCollectionById(NitriteId nitriteId) {
+    return nitriteManager.getCollectionRepository().getById(nitriteId);
+  }
+
+  public List<Collection> getCollections(FilterCollection filterCollection) {
+    if (filterCollection.isFiltering()) {
+      return nitriteManager.getCollectionRepository().find(filterCollection.filtersToQuery()).toList();
+    }
+    return nitriteManager.getCollectionRepository().find().toList();
+  }
+
+  public void updateCollection(Collection collection) {
+    nitriteManager.getCollectionRepository().update(collection);
+  }
+
+  public void addCollection(Collection collection) {
+    try {
+      nitriteManager.getCollectionRepository().insert(collection);
+    } catch (NitriteException e) {
+      log.error(e.getMessage());
+    }
   }
 }

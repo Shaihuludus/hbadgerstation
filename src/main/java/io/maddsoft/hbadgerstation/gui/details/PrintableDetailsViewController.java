@@ -1,13 +1,11 @@
 package io.maddsoft.hbadgerstation.gui.details;
 
-import com.sun.tools.javac.Main;
 import io.maddsoft.hbadgerstation.gui.Controller;
 import io.maddsoft.hbadgerstation.gui.MainWindowController;
 import io.maddsoft.hbadgerstation.storage.DatabaseManager;
 import io.maddsoft.hbadgerstation.storage.entities.Author;
 import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
 import java.io.IOException;
-import java.util.HashMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -38,7 +36,7 @@ public class PrintableDetailsViewController implements Controller {
 
 
   private AuthorTabController authorTabController;
-  private DatabaseManager databaseManager = new DatabaseManager();
+  private final DatabaseManager databaseManager = new DatabaseManager();
 
   private PrintableThing printableThing;
 

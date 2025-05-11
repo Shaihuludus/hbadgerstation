@@ -1,33 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.CheckComboBox?>
 
-<VBox alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.maddsoft.hbadgerstation.gui.library.LibraryFiltersController">
+
+<VBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.maddsoft.hbadgerstation.gui.library.LibraryFiltersController">
    <children>
-      <Label text="Filters" textAlignment="CENTER">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <HBox alignment="CENTER">
-         <children>
-            <CheckComboBox fx:id="authorsFilter" showCheckedCount="true" title="Authors">
-               <HBox.margin>
-                  <Insets right="5.0" top="10.0" />
-               </HBox.margin>
-            </CheckComboBox>
-         </children>
-         <VBox.margin>
-            <Insets />
-         </VBox.margin>
-      </HBox>
+      <Accordion>
+        <panes>
+          <TitledPane alignment="CENTER" animated="false" text="Filters">
+               <content>
+                  <VBox alignment="TOP_CENTER">
+                     <children>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <CheckComboBox fx:id="authorsFilter" showCheckedCount="true" title="Authors">
+                                 <HBox.margin>
+                                    <Insets right="5.0" />
+                                 </HBox.margin>
+                              </CheckComboBox>
+                           </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </HBox>
+                     </children>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+                  </VBox>
+               </content>
+            </TitledPane>
+        </panes>
+      </Accordion>
+      <Separator prefWidth="200.0" />
+      <Accordion>
+        <panes>
+          <TitledPane alignment="CENTER" animated="false" text="Collections">
+               <content>
+                  <ListView fx:id="collectionList" />
+               </content>
+            </TitledPane>
+        </panes>
+      </Accordion>
    </children>
-   <padding>
-      <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-   </padding>
 </VBox>

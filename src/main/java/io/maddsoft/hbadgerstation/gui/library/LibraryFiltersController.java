@@ -4,17 +4,21 @@ import io.maddsoft.hbadgerstation.gui.Controller;
 import io.maddsoft.hbadgerstation.storage.DatabaseManager;
 import io.maddsoft.hbadgerstation.storage.FilterCollection;
 import io.maddsoft.hbadgerstation.storage.entities.Author;
+import io.maddsoft.hbadgerstation.storage.entities.Collection;
 import java.util.Comparator;
 import java.util.List;
 
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
+import javafx.scene.control.ListView;
 import lombok.Getter;
 import org.controlsfx.control.CheckComboBox;
 
 public class LibraryFiltersController implements Controller {
 
   @FXML private CheckComboBox<Author> authorsFilter;
+
+  @FXML private ListView<Collection> collectionList;
 
   private LibraryViewController parent;
 
@@ -33,7 +37,14 @@ public class LibraryFiltersController implements Controller {
           }
           parent.refreshDataViews();
         });
+
+    collectionList.getItems().addAll(prepareCollections());
   }
+
+  private List<Collection> prepareCollections(){
+    return databaseManager.getCollections(new FilterCollection()).stream().toList();
+  }
+
 
   private List<Author> prepareAuthorFilters(){
     return databaseManager.getAuthors().stream().sorted(Comparator.comparing(Author::getAuthorName)).toList();
@@ -42,6 +53,9 @@ public class LibraryFiltersController implements Controller {
   public void reloadFilters() {
     authorsFilter.getItems().clear();
     authorsFilter.getItems().addAll(prepareAuthorFilters());
+
+    collectionList.getItems().clear();
+    collectionList.getItems().addAll(prepareCollections());
   }
 
   @Override

@@ -4,11 +4,11 @@ import static org.dizitart.no2.common.util.Iterables.setOf;
 
 import io.maddsoft.hbadgerstation.Settings;
 import io.maddsoft.hbadgerstation.storage.entities.Author;
+import io.maddsoft.hbadgerstation.storage.entities.Collection;
 import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
 import io.maddsoft.hbadgerstation.storage.entities.PrintableThing.PrintableConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.Nitrite;
-import org.dizitart.no2.collection.NitriteId;
 import org.dizitart.no2.mvstore.MVStoreModule;
 import org.dizitart.no2.common.mapper.SimpleNitriteMapper;
 import org.dizitart.no2.repository.ObjectRepository;
@@ -41,6 +41,7 @@ log.info("Opening Nitrite DB...");
     SimpleNitriteMapper documentMapper = new SimpleNitriteMapper();
     documentMapper.registerEntityConverter(new Author.AuthorConverter());
     documentMapper.registerEntityConverter(new PrintableConverter());
+    documentMapper.registerEntityConverter(new Collection.CollectionConverter());
 
     db = Nitrite.builder()
         .loadModule(storeModule)
@@ -62,8 +63,11 @@ log.info("Opening Nitrite DB...");
     return db.getRepository(Author.class);
   }
 
-  public void deletePrintableThing(NitriteId id) {
-    getPrintableThingRepository().remove(PrintableThing.builder().printableThingId(id).build());
+  public ObjectRepository<Collection> getCollectionRepository() {
+    if (db == null) {
+      openDb();
+    }
+    return db.getRepository(Collection.class);
   }
 
   public void closeDb() {

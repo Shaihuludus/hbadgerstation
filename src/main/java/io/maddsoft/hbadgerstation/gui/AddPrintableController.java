@@ -3,11 +3,14 @@ package io.maddsoft.hbadgerstation.gui;
 import io.maddsoft.hbadgerstation.gui.gridview.GridCellSelectionController;
 import io.maddsoft.hbadgerstation.gui.library.LibraryViewController;
 import io.maddsoft.hbadgerstation.storage.AuthorImporter;
+import io.maddsoft.hbadgerstation.storage.DatabaseManager;
 import io.maddsoft.hbadgerstation.storage.ModelImporter;
+import io.maddsoft.hbadgerstation.storage.entities.Author;
 import java.io.File;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -24,13 +27,40 @@ public class AddPrintableController implements Controller{
 
   @FXML private Button importButton;
   @FXML private CheckBox rootDirectoryCheckbox;
+  @FXML private CheckBox collectionCheckbox;
+  @FXML private ComboBox<String> authorCombo;
+
 
   private File chosenDirectory;
+
 
   @FXML
   private void initialize() {
     pathField.textProperty().addListener((_, _, newValue) -> importButton.setDisable(!StringUtils.isNotBlank(newValue)));
+    rootDirectoryCheckbox.selectedProperty().addListener((_, _, newValue) -> {
+      collectionCheckbox.setDisable(!newValue);
+      if(Boolean.FALSE.equals(newValue)) {
+        collectionCheckbox.setSelected(false);
+      }
+    });
+    authorField.textProperty().addListener((_, _, newValue) -> initializeAuthors());
+    authorCombo.valueProperty().addListener((_, _, newValue) -> authorField.setText(newValue));
+    initializeAuthors();
   }
+
+
+
+  private void initializeAuthors() {
+    DatabaseManager databaseManager = new DatabaseManager();
+    authorCombo.getItems().clear();
+    authorCombo.getItems().addAll(databaseManager
+        .getAuthors()
+        .stream()
+        .map(Author::getAuthorName)
+        .filter(authorName -> authorName == null || authorName.toLowerCase().startsWith(this.authorField.getText().toLowerCase())).toList());
+
+  }
+
 
   @Override
   public void setParent(Controller parent) {
@@ -58,7 +88,7 @@ public class AddPrintableController implements Controller{
       if (parent instanceof LibraryViewController libraryViewController){
         libraryViewController.setCurrentDirectory(chosenDirectory);
       }
-      new ModelImporter(chosenDirectory, authorName, rootDirectoryCheckbox.isSelected()).importModels();
+      new ModelImporter(chosenDirectory, authorName, rootDirectoryCheckbox.isSelected(), collectionCheckbox.isSelected()).importModels();
       parent.refreshDataViews();
       if (parent instanceof LibraryViewController libraryViewController){
         libraryViewController.refreshAuthors();

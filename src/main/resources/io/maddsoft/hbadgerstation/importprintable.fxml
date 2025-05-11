@@ -3,24 +3,32 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.SepiaTone?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.maddsoft.hbadgerstation.gui.AddPrintableController">
    <children>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="281.0" prefWidth="649.0" styleClass="button-circle">
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="337.0" prefWidth="649.0" styleClass="button-circle">
          <children>
             <TextField fx:id="pathField" alignment="CENTER" layoutX="190.0" layoutY="45.0" prefHeight="25.0" prefWidth="291.0" style="-fx-background-radius: 10;">
                <cursor>
                   <Cursor fx:constant="TEXT" />
-               </cursor></TextField>
+               </cursor>
+            </TextField>
             <Button fx:id="chooseDirectoryButton" layoutX="499.0" layoutY="45.0" mnemonicParsing="false" onAction="#openFileChooser" styleClass=".button.center-pill" text="Choose Directory" />
-            <Button fx:id="importButton" disable="true" layoutX="499.0" layoutY="172.0" mnemonicParsing="false" onAction="#importPrintableAction" text="Import" />
+            <Button fx:id="importButton" disable="true" layoutX="499.0" layoutY="228.0" mnemonicParsing="false" onAction="#importPrintableAction" prefHeight="36.0" prefWidth="131.0" text="Import" />
             <TextField fx:id="authorField" layoutX="189.0" layoutY="88.0" prefHeight="25.0" prefWidth="294.0" promptText="unknown" style="-fx-background-radius: 10;" />
             <Label contentDisplay="CENTER" layoutX="58.0" layoutY="45.0" text="Printable Directory" />
             <Label layoutX="58.0" layoutY="96.0" text="Author" />
-            <CheckBox fx:id="rootDirectoryCheckbox" layoutX="189.0" layoutY="141.0" mnemonicParsing="false" text="Root Directory" />
+            <CheckBox fx:id="rootDirectoryCheckbox" layoutX="189.0" layoutY="173.0" mnemonicParsing="false" text="Root Directory" />
+            <ComboBox fx:id="authorCombo" layoutX="189.0" layoutY="128.0" prefHeight="20.0" prefWidth="294.0" promptText="Help">
+               <effect>
+                  <SepiaTone level="0.44" />
+               </effect></ComboBox>
+            <CheckBox fx:id="collectionCheckbox" disable="true" layoutX="189.0" layoutY="206.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="118.0" text="As Collection" />
          </children>
       </AnchorPane>
    </children>

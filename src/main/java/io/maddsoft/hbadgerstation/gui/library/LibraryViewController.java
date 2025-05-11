@@ -10,6 +10,7 @@ import io.maddsoft.hbadgerstation.gui.gridview.CustomGridViewSkin;
 import io.maddsoft.hbadgerstation.gui.gridview.GridCellController;
 import io.maddsoft.hbadgerstation.gui.gridview.GridCellSelectionController;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewGridCellCallback;
+import io.maddsoft.hbadgerstation.gui.gridview.GridViewPrintableBuilder;
 import io.maddsoft.hbadgerstation.gui.printableview.PrintableViewController;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewSelectManager;
 import io.maddsoft.hbadgerstation.storage.DatabaseManager;
@@ -55,12 +56,13 @@ public class LibraryViewController implements GridCellSelectionController {
   @Setter
   private File currentDirectory;
 
+  private GridViewPrintableBuilder gridViewBuilder = new GridViewPrintableBuilder();
+
   @FXML
   private void initialize() {
     gridViewSelectManager.addGridControllerToNotify(this);
 
-    libraryView.setItems(FXCollections.observableArrayList(prepareLibraryView(
-        new FilterCollection())));
+    libraryView.setItems(FXCollections.observableArrayList(gridViewBuilder.buildPrintable(new FilterCollection(), gridViewSelectManager, true)));
     libraryView.setCellHeight(400);
     libraryView.setCellWidth(400);
     libraryView.setSkin(new CustomGridViewSkin<>(libraryView));
@@ -79,28 +81,6 @@ public class LibraryViewController implements GridCellSelectionController {
     } catch (IOException e) {
       log.error(e.getMessage(), e);
     }
-  }
-
-  private List<VBox> prepareLibraryView(FilterCollection filterCollection) {
-    AtomicInteger tempPosition = new AtomicInteger();
-    return databaseManager.getPrintableThings(filterCollection).stream()
-        .map(PrintableThingTableElementConverter::convert).map(printableThingTableElement -> {
-          FXMLLoader fxmlLoader = new FXMLLoader();
-          fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/printableView.fxml"));
-          try {
-            VBox imageViewRoot = fxmlLoader.load();
-            printableThingTableElement.setListPosition(tempPosition.getAndIncrement());
-            PrintableViewController imageViewController = fxmlLoader.getController();
-            imageViewRoot.setOnMouseClicked(imageViewController::onMouseClicked);
-            imageViewController.initialize(printableThingTableElement, gridViewSelectManager);
-            imageViewRoot.prefWidth(GUIDefaults.IMAGE_DISPLAY_SIZE);
-            return imageViewRoot;
-            } catch (IOException e) {
-            log.error(e.getMessage());
-          }
-          return null;
-        }).toList();
-
   }
 
   @Override
@@ -139,8 +119,7 @@ public class LibraryViewController implements GridCellSelectionController {
   @Override
   public void refreshDataViews() {
     libraryView.getItems().clear();
-    libraryView.setItems(FXCollections.observableArrayList(prepareLibraryView(
-        filtersController.getFilterCollection())));
+    libraryView.setItems(FXCollections.observableArrayList(gridViewBuilder.buildPrintable(filtersController.getFilterCollection(), gridViewSelectManager, true)));
   }
 
   @Override

@@ -29,7 +29,7 @@ public class PrintableViewController extends GridCell<PrintableThingTableElement
   @Getter
   private PrintableThingTableElement printableThingTableElement;
 
-  public void initialize(PrintableThingTableElement printableThingTableElement, GridViewSelectManager gridViewSelectManager) {
+  public void initialize(PrintableThingTableElement printableThingTableElement, GridViewSelectManager gridViewSelectManager, boolean showAuthorName) {
     this.printableThingTableElement = printableThingTableElement;
     this.gridViewSelectManager = gridViewSelectManager;
     imageView.setImage(
@@ -39,7 +39,11 @@ public class PrintableViewController extends GridCell<PrintableThingTableElement
     imageView.setFitWidth(GUIDefaults.PRINTABLE_IMAGE_MINIATURE_SIZE);
     imageView.setPreserveRatio(true);
     printableName.setText(printableThingTableElement.getName());
-    authorName.setText(printableThingTableElement.getAuthorName());
+    if (showAuthorName) {
+      authorName.setText(printableThingTableElement.getAuthorName());
+    } else {
+      authorName.setVisible(false);
+    }
     type.setText(printableThingTableElement.getType());
   }
 

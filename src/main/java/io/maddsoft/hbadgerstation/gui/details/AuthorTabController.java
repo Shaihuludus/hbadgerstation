@@ -7,6 +7,7 @@ import io.maddsoft.hbadgerstation.gui.gridview.CustomGridViewSkin;
 import io.maddsoft.hbadgerstation.gui.gridview.GridCellController;
 import io.maddsoft.hbadgerstation.gui.gridview.GridCellSelectionController;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewGridCellCallback;
+import io.maddsoft.hbadgerstation.gui.gridview.GridViewPrintableBuilder;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewSelectManager;
 import io.maddsoft.hbadgerstation.gui.printableview.PrintableViewController;
 import io.maddsoft.hbadgerstation.storage.DatabaseManager;
@@ -58,25 +59,8 @@ public class AuthorTabController implements GridCellSelectionController {
   private List<VBox> prepareAuthorModels() {
     FilterCollection filterCollection = new FilterCollection();
     filterCollection.setFilter("authorName", Collections.singletonList(author.getAuthorName()));
-    AtomicInteger tempPosition = new AtomicInteger(0);
-    return databaseManager.getPrintableThings(filterCollection).stream()
-        .filter(printableThing -> !printableThing.getPrintableThingId().equals(printableId))
-        .map(PrintableThingTableElementConverter::convert).map(printableThingTableElement -> {
-          FXMLLoader fxmlLoader = new FXMLLoader();
-          fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/printableView.fxml"));
-          try {
-            VBox imageViewRoot = fxmlLoader.load();
-            printableThingTableElement.setListPosition(tempPosition.getAndIncrement());
-            PrintableViewController imageViewController = fxmlLoader.getController();
-            imageViewRoot.setOnMouseClicked(imageViewController::onMouseClicked);
-            imageViewController.initialize(printableThingTableElement, gridViewSelectManager);
-            imageViewRoot.prefWidth(GUIDefaults.IMAGE_DISPLAY_SIZE);
-            return imageViewRoot;
-          } catch (IOException e) {
-            log.error(e.getMessage());
-          }
-          return null;
-        }).toList();
+    filterCollection.setNotIdFilter("printableThingId", Collections.singletonList(printableId));
+    return new GridViewPrintableBuilder().buildPrintable(filterCollection, gridViewSelectManager, false);
   }
 
   @Override

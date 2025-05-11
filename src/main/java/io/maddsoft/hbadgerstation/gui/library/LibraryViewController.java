@@ -2,10 +2,8 @@ package io.maddsoft.hbadgerstation.gui.library;
 
 import io.maddsoft.hbadgerstation.gui.Controller;
 import io.maddsoft.hbadgerstation.gui.EventsCreator;
-import io.maddsoft.hbadgerstation.gui.GUIDefaults;
 import io.maddsoft.hbadgerstation.gui.MainWindowController;
 import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement;
-import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement.PrintableThingTableElementConverter;
 import io.maddsoft.hbadgerstation.gui.gridview.CustomGridViewSkin;
 import io.maddsoft.hbadgerstation.gui.gridview.GridCellController;
 import io.maddsoft.hbadgerstation.gui.gridview.GridCellSelectionController;
@@ -18,8 +16,6 @@ import io.maddsoft.hbadgerstation.storage.FilterCollection;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -120,6 +116,10 @@ public class LibraryViewController implements GridCellSelectionController {
   public void refreshDataViews() {
     libraryView.getItems().clear();
     libraryView.setItems(FXCollections.observableArrayList(gridViewBuilder.buildPrintable(filtersController.getFilterCollection(), gridViewSelectManager, true)));
+  }
+
+  public void refreshAuthors() {
+    filtersController.reloadFilters();
   }
 
   @Override

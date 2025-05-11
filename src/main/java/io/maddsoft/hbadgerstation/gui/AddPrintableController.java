@@ -60,6 +60,9 @@ public class AddPrintableController implements Controller{
       }
       new ModelImporter(chosenDirectory, authorName, rootDirectoryCheckbox.isSelected()).importModels();
       parent.refreshDataViews();
+      if (parent instanceof LibraryViewController libraryViewController){
+        libraryViewController.refreshAuthors();
+      }
       if (parent instanceof GridCellSelectionController gridCellSelectionController){
         gridCellSelectionController.selectLastCell();
         gridCellSelectionController.scrollToLastCell();

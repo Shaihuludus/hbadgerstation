@@ -2,6 +2,7 @@ package io.maddsoft.hbadgerstation.storage;
 
 import io.maddsoft.hbadgerstation.storage.entities.Author;
 import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
+import java.util.HashMap;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.collection.NitriteId;
@@ -70,5 +71,9 @@ public class DatabaseManager {
 
   public void deletePrintableThing(NitriteId id) {
     nitriteManager.deletePrintableThing(id);
+  }
+
+  public void updatePrintableThing(PrintableThing printableThing) {
+    nitriteManager.getPrintableThingRepository().update(printableThing);
   }
 }

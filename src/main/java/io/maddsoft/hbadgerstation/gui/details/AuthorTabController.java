@@ -1,25 +1,21 @@
 package io.maddsoft.hbadgerstation.gui.details;
 
 import io.maddsoft.hbadgerstation.gui.Controller;
-import io.maddsoft.hbadgerstation.gui.GUIDefaults;
-import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement.PrintableThingTableElementConverter;
 import io.maddsoft.hbadgerstation.gui.gridview.CustomGridViewSkin;
 import io.maddsoft.hbadgerstation.gui.gridview.GridCellController;
 import io.maddsoft.hbadgerstation.gui.gridview.GridCellSelectionController;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewGridCellCallback;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewPrintableBuilder;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewSelectManager;
-import io.maddsoft.hbadgerstation.gui.printableview.PrintableViewController;
 import io.maddsoft.hbadgerstation.storage.DatabaseManager;
 import io.maddsoft.hbadgerstation.storage.FilterCollection;
 import io.maddsoft.hbadgerstation.storage.entities.Author;
-import java.io.IOException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +34,7 @@ public class AuthorTabController implements GridCellSelectionController {
 
   private final GridViewSelectManager gridViewSelectManager = new GridViewSelectManager();
 
+  @FXML private ComboBox<Author> authorChooseBox;
   @FXML private TextField authorNameField;
   @FXML private HyperlinkLabel authorWebsiteField;
   @FXML private GridView<VBox> modelsGrid;
@@ -48,12 +45,32 @@ public class AuthorTabController implements GridCellSelectionController {
     this.author = author;
     this.printableId = printableId;
     authorNameField.setText(author.getAuthorName());
+    authorNameField.textProperty().addListener((_, _, newValue) -> {
+      detailsViewController.changeHappened();
+    });
     authorWebsiteField.setText("[" + author.getWebsiteUrl() + "]");
     modelsGrid.setItems(FXCollections.observableArrayList(prepareAuthorModels()));
     modelsGrid.setCellHeight(400);
     modelsGrid.setCellWidth(400);
     modelsGrid.setSkin(new CustomGridViewSkin<>(modelsGrid));
     modelsGrid.setCellFactory(new GridViewGridCellCallback());
+    setupAutorSelector();
+  }
+
+  private void setupAutorSelector() {
+    authorChooseBox.setVisible(false);
+    authorChooseBox.getItems().addAll(prepareAuthor());
+    authorChooseBox.getSelectionModel().select(this.author);
+    authorChooseBox.setManaged(false);
+    authorChooseBox.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
+      authorNameField.setText(newValue.toString());
+      authorWebsiteField.setText("[" + newValue.getWebsiteUrl() + "]");
+      detailsViewController.changeHappened();
+    });
+  }
+
+  private List<Author> prepareAuthor(){
+    return databaseManager.getAuthors().stream().sorted(Comparator.comparing(Author::getAuthorName)).toList();
   }
 
   private List<VBox> prepareAuthorModels() {
@@ -61,6 +78,12 @@ public class AuthorTabController implements GridCellSelectionController {
     filterCollection.setFilter("authorName", Collections.singletonList(author.getAuthorName()));
     filterCollection.setNotIdFilter("printableThingId", Collections.singletonList(printableId));
     return new GridViewPrintableBuilder().buildPrintable(filterCollection, gridViewSelectManager, false);
+  }
+
+  public void setEditable(boolean lock){
+    authorChooseBox.setVisible(lock);
+    authorChooseBox.setManaged(lock);
+    authorNameField.setEditable(lock);
   }
 
   @Override
@@ -86,5 +109,17 @@ public class AuthorTabController implements GridCellSelectionController {
   @Override
   public void setParent(Controller parent) {
     detailsViewController = (PrintableDetailsViewController) parent;
+  }
+
+  public Author updateAuthor() {
+    if(isNewAuthor()) {
+      author.setWebsiteUrl(authorWebsiteField.getText());
+    }
+    author.setAuthorName(authorNameField.getText());
+    return author;
+  }
+
+  public boolean isNewAuthor() {
+    return authorChooseBox.getItems().stream().noneMatch(item -> item.getAuthorName().equals(authorNameField.getText()));
   }
 }

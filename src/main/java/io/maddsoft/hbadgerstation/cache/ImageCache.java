@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Mode;
@@ -53,7 +54,11 @@ public class ImageCache {
   private void scaleImage(String imageName, @NonNull File fileInCache, int width, int height) throws IOException {
     BufferedImage originalImage = ImageIO.read(new File(imageName));
     BufferedImage resizedImage = Scalr.resize(originalImage, Mode.AUTOMATIC, width, height);
-    ImageIO.write(resizedImage, "jpg", fileInCache);
+    String extension = StringUtils.substringAfterLast(imageName, ".").toLowerCase();
+    if (extension.startsWith("jp")) {
+      extension = "jpg";
+    }
+    ImageIO.write(resizedImage, extension, fileInCache);
   }
 
   private String generateInCacheName(String imageName, int width, int height) {

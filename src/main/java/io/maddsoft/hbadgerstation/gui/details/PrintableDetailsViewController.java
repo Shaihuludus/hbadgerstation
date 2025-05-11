@@ -1,10 +1,14 @@
 package io.maddsoft.hbadgerstation.gui.details;
 
+import com.sun.tools.javac.Main;
 import io.maddsoft.hbadgerstation.gui.Controller;
+import io.maddsoft.hbadgerstation.gui.MainWindowController;
 import io.maddsoft.hbadgerstation.storage.DatabaseManager;
 import io.maddsoft.hbadgerstation.storage.entities.Author;
 import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
 import java.io.IOException;
+import java.util.HashMap;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -33,22 +37,12 @@ public class PrintableDetailsViewController implements Controller {
   @FXML private Tab authorTab;
 
 
+  private AuthorTabController authorTabController;
   private DatabaseManager databaseManager = new DatabaseManager();
 
   private PrintableThing printableThing;
 
-
-  @FXML
-  private void initialize() {
-    lockButton.selectedProperty().addListener((_, _, newValue) -> activateEdition(!newValue));
-  }
-
-  private void activateEdition(boolean lock) {
-    nameField.setEditable(lock);
-    descriptionField.setEditable(lock);
-    directoryPathField.setEditable(lock);
-    lockButton.setGraphic(!lock ? new Glyph("FontAwesome", FontAwesome.Glyph.LOCK) : new Glyph("FontAwesome", FontAwesome.Glyph.UNLOCK));
-  }
+  private MainWindowController parent;
 
   public void setup(NitriteId nitriteId) {
     if( printableThing != null && printableThing.getPrintableThingId().equals(nitriteId)) {
@@ -58,11 +52,13 @@ public class PrintableDetailsViewController implements Controller {
     if (printableThing != null) {
       nameField.setText(printableThing.getName());
       nameField.textProperty().addListener((_, _, newValue) -> {
-        updateButton.setDisable(printableThing.getName().equals(newValue));
-        revertButton.setDisable(printableThing.getName().equals(newValue));
+        if (!printableThing.getName().equals(newValue)){
+          changeHappened();
+        }
       });
       descriptionField.setText(printableThing.getDescription());
       directoryPathField.setText(printableThing.getDirectoryPath());
+      updateButton.setOnAction(this::updatePrintable);
       try {
         setupAuthorTabPane(printableThing.getAuthorName());
       } catch (IOException e) {
@@ -79,6 +75,49 @@ public class PrintableDetailsViewController implements Controller {
         log.error(e.getMessage(), e);
       }
     }
+    activateEdition(false);
+    updateButton.setDisable(true);
+    revertButton.setDisable(true);
+  }
+
+  @FXML
+  private void initialize() {
+    lockButton.selectedProperty().addListener((_, _, newValue) -> activateEdition(!newValue));
+
+  }
+
+  @Override
+  public void setParent(Controller parent) {
+    this.parent = (MainWindowController) parent;
+  }
+
+  public void changeHappened() {
+    revertButton.setDisable(false);
+    updateButton.setDisable(false);
+  }
+
+  private void updatePrintable(ActionEvent actionEvent) {
+    printableThing.setName(nameField.getText());
+    printableThing.setDescription(descriptionField.getText());
+    printableThing.setDirectoryPath(directoryPathField.getText());
+    boolean isNewAuthor = authorTabController.isNewAuthor();
+    Author author = authorTabController.updateAuthor();
+    printableThing.setAuthorName(author.getAuthorName());
+    if(isNewAuthor) {
+      databaseManager.addAuthor(author);
+    }
+    databaseManager.updatePrintableThing(printableThing);
+    revertButton.setDisable(true);
+    updateButton.setDisable(true);
+    parent.refreshLibraryView();
+  }
+
+  private void activateEdition(boolean lock) {
+    nameField.setEditable(lock);
+    descriptionField.setEditable(lock);
+    directoryPathField.setEditable(lock);
+    lockButton.setGraphic(!lock ? new Glyph("FontAwesome", FontAwesome.Glyph.LOCK) : new Glyph("FontAwesome", FontAwesome.Glyph.UNLOCK));
+    authorTabController.setEditable(lock);
   }
 
   private void setupPrintableTab() throws IOException {
@@ -105,8 +144,9 @@ public class PrintableDetailsViewController implements Controller {
       FXMLLoader fxmlLoader = new FXMLLoader();
       fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/details/authortab.fxml"));
       Region view = fxmlLoader.load();
-      AuthorTabController authorTabController = fxmlLoader.getController();
+      authorTabController = fxmlLoader.getController();
       authorTabController.initialize(author, printableThing.getPrintableThingId());
+      authorTabController.setParent(this);
       authorTab.setContent(view);
     }
   }

@@ -38,6 +38,29 @@ public class MainWindowController implements Controller {
 
   private LibraryViewController libraryViewController;
 
+
+  public void activateModeSwitcher(boolean activate) {
+    if (activate) {
+      modeSwitcher.getToggles().forEach(
+          toggle -> ((ToggleButton)toggle).setDisable(false)
+      );
+    } else {
+      modeSwitcher.getToggles().forEach(
+          toggle -> ((ToggleButton) toggle).setDisable(true)
+      );
+    }
+  }
+
+  public void refreshLibraryView() {
+    libraryViewController.refreshDataViews();
+    libraryViewController.refreshAuthors();
+  }
+
+  public void postConstruct() {
+    libraryViewController.postConstruct();
+  }
+
+
   @FXML
   private void initialize() throws IOException {
     libraryViewActivated();
@@ -85,6 +108,7 @@ public class MainWindowController implements Controller {
     }
     if (detailsViewController == null) {
       detailsViewController = fxmlLoader.getController();
+      detailsViewController.setParent(this);
     }
     detailsViewController.setup(nitriteId);
     addToView(detailsView);
@@ -102,22 +126,5 @@ public class MainWindowController implements Controller {
     }
     mainViewBox.getChildren().add(1, view);
     VBox.setVgrow(view, Priority.ALWAYS);
-  }
-
-
-  public void activateModeSwitcher(boolean activate) {
-    if (activate) {
-      modeSwitcher.getToggles().forEach(
-          toggle -> ((ToggleButton)toggle).setDisable(false)
-      );
-    } else {
-      modeSwitcher.getToggles().forEach(
-          toggle -> ((ToggleButton) toggle).setDisable(true)
-      );
-    }
-  }
-
-  public void postConstruct() {
-    libraryViewController.postConstruct();
   }
 }

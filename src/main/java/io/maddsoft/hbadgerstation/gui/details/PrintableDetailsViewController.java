@@ -106,7 +106,7 @@ public class PrintableDetailsViewController implements Controller {
       fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/details/authortab.fxml"));
       Region view = fxmlLoader.load();
       AuthorTabController authorTabController = fxmlLoader.getController();
-      authorTabController.initialize(author);
+      authorTabController.initialize(author, printableThing.getPrintableThingId());
       authorTab.setContent(view);
     }
   }

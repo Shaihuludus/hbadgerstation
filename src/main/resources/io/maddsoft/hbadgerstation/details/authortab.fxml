@@ -42,6 +42,6 @@
             </Label>
          </children>
       </VBox>
-      <GridView fx:id="imagesGrid" prefHeight="229.0" prefWidth="600.0" styleClass="custom-border" stylesheets="@../../../../custom_css.css" VBox.vgrow="ALWAYS" />
+      <GridView fx:id="modelsGrid" prefHeight="229.0" prefWidth="600.0" styleClass="custom-border" stylesheets="@../../../../custom_css.css" VBox.vgrow="ALWAYS" />
    </children>
 </VBox>

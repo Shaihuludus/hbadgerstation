@@ -27,17 +27,15 @@ public class PrintableDetailsViewController implements Controller {
   @FXML private Button updateButton;
   @FXML private TextField nameField;
   @FXML private TextArea descriptionField;
-  @FXML private TextField authorNameField;
-  @FXML private TextField authorWebsiteField;
   @FXML private TextField directoryPathField;
   @FXML private Tab imagesTab;
   @FXML private Tab printableTab;
+  @FXML private Tab authorTab;
 
 
   private DatabaseManager databaseManager = new DatabaseManager();
 
   private PrintableThing printableThing;
-  private Author author;
 
 
   @FXML
@@ -46,10 +44,8 @@ public class PrintableDetailsViewController implements Controller {
   }
 
   private void activateEdition(boolean lock) {
-    System.out.println(lock);
     nameField.setEditable(lock);
     descriptionField.setEditable(lock);
-    authorWebsiteField.setEditable(lock);
     directoryPathField.setEditable(lock);
     lockButton.setGraphic(!lock ? new Glyph("FontAwesome", FontAwesome.Glyph.LOCK) : new Glyph("FontAwesome", FontAwesome.Glyph.UNLOCK));
   }
@@ -67,7 +63,11 @@ public class PrintableDetailsViewController implements Controller {
       });
       descriptionField.setText(printableThing.getDescription());
       directoryPathField.setText(printableThing.getDirectoryPath());
-      setupAuthorTabPane(printableThing.getAuthorName());
+      try {
+        setupAuthorTabPane(printableThing.getAuthorName());
+      } catch (IOException e) {
+        log.error(e.getMessage(), e);
+      }
       try {
         setupImageTab();
       } catch (IOException e) {
@@ -99,11 +99,15 @@ public class PrintableDetailsViewController implements Controller {
     imagesTab.setContent(view);
   }
 
-  private void setupAuthorTabPane(String authorName) {
-    author = databaseManager.getAuthorByName(authorName);
+  private void setupAuthorTabPane(String authorName) throws IOException {
+    Author author = databaseManager.getAuthorByName(authorName);
     if (author != null) {
-      authorNameField.setText(author.getAuthorName());
-      authorWebsiteField.setText(author.getWebsiteUrl());
+      FXMLLoader fxmlLoader = new FXMLLoader();
+      fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/details/authortab.fxml"));
+      Region view = fxmlLoader.load();
+      AuthorTabController authorTabController = fxmlLoader.getController();
+      authorTabController.initialize(author);
+      authorTab.setContent(view);
     }
   }
 

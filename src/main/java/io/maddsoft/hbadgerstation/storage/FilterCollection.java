@@ -3,12 +3,16 @@ package io.maddsoft.hbadgerstation.storage;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
+import lombok.ToString;
 import org.dizitart.no2.collection.NitriteId;
 import org.dizitart.no2.filters.FluentFilter;
 import org.dizitart.no2.filters.NitriteFilter;
 
+@ToString
 public class FilterCollection {
 
+  @Getter
   private final HashMap<String, List<String>> filters = new HashMap<>();
   private final HashMap<String, List<NitriteId>> notIdFilters = new HashMap<>();
   private final HashMap<String, List<NitriteId>> idFilters = new HashMap<>();
@@ -38,7 +42,7 @@ public class FilterCollection {
   }
 
   public boolean isFiltering() {
-    return !filters.isEmpty();
+    return !filters.isEmpty() || !notIdFilters.isEmpty() || !idFilters.isEmpty();
   }
 
   public void clearFilters() {
@@ -56,7 +60,7 @@ public class FilterCollection {
   private NitriteFilter buildInIdFilters(NitriteFilter transformerdFilter) {
     for (Map.Entry<String, List<NitriteId>> entry: idFilters.entrySet()) {
       if(transformerdFilter == null) {
-        transformerdFilter = FluentFilter.where(entry.getKey()).notIn(entry.getValue().toArray(new NitriteId[0]));
+        transformerdFilter = FluentFilter.where(entry.getKey()).in(entry.getValue().toArray(new NitriteId[0]));
       } else {
         transformerdFilter = (NitriteFilter) transformerdFilter.and(FluentFilter.where(entry.getKey()).in(entry.getValue().toArray(new NitriteId[0])));
       }

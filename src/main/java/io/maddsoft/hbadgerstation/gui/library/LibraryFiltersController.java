@@ -5,13 +5,13 @@ import io.maddsoft.hbadgerstation.storage.DatabaseManager;
 import io.maddsoft.hbadgerstation.storage.FilterCollection;
 import io.maddsoft.hbadgerstation.storage.entities.Author;
 import io.maddsoft.hbadgerstation.storage.entities.Collection;
+import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
 import java.util.Comparator;
 import java.util.List;
 
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
-import javafx.scene.text.Text;
 import lombok.Getter;
 import org.controlsfx.control.CheckComboBox;
 
@@ -35,28 +35,28 @@ public class LibraryFiltersController implements Controller {
     authorsFilter.getCheckModel().getCheckedItems().addListener(
         (ListChangeListener<Author>) change -> {
           while (change.next()) {
-            filterCollection.setFilter("authorName", change.getList().stream().map(
+            filterCollection.setFilter(Author.AUTHOR_NAME, change.getList().stream().map(
                 Author::getAuthorName).toList());
           }
           parent.refreshDataViews();
           refreshCollections();
         });
-    collectionList.setOnMouseClicked(event -> {
+    collectionList.setOnMouseClicked(_ -> {
       if(Boolean.FALSE.equals(collectionsClicked)) {
         collectionList.getSelectionModel().clearSelection();
-        filterCollection.setIdFilter("printableThingId", null);
+        filterCollection.setIdFilter(PrintableThing.PRINTABLE_THING_ID, null);
         parent.refreshDataViews();
         refreshCollections();
       }
       collectionsClicked = false;
     });
 
-    collectionList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+    collectionList.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
       collectionsClicked = true;
       if(newValue != null) {
-        filterCollection.setIdFilter("printableThingId", newValue.getPrintableThingIds());
+        filterCollection.setIdFilter(PrintableThing.PRINTABLE_THING_ID, newValue.getPrintableThingIds());
       } else {
-        filterCollection.setIdFilter("printableThingId", null);
+        filterCollection.setIdFilter(PrintableThing.PRINTABLE_THING_ID, null);
       }
       parent.refreshDataViews();
     });
@@ -70,7 +70,7 @@ public class LibraryFiltersController implements Controller {
 
   private List<Collection> prepareCollections(){
     FilterCollection collectionFilters = new FilterCollection();
-    collectionFilters.setFilter("authorName", filterCollection.getFilters().get("authorName"));
+    collectionFilters.setFilter(Author.AUTHOR_NAME, filterCollection.getFilters().get(Author.AUTHOR_NAME));
     return databaseManager.getCollections(collectionFilters).stream().toList();
   }
 

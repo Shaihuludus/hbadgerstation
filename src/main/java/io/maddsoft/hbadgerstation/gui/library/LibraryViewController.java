@@ -6,10 +6,9 @@ import io.maddsoft.hbadgerstation.gui.MainWindowController;
 import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement;
 import io.maddsoft.hbadgerstation.gui.gridview.CustomGridViewSkin;
 import io.maddsoft.hbadgerstation.gui.gridview.GridCellController;
-import io.maddsoft.hbadgerstation.gui.gridview.GridCellSelectionController;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewGridCellCallback;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewPrintableBuilder;
-import io.maddsoft.hbadgerstation.gui.printableview.PrintableViewController;
+import io.maddsoft.hbadgerstation.gui.gridview.PrintableThingGridSelectionController;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewSelectManager;
 import io.maddsoft.hbadgerstation.storage.DatabaseManager;
 import io.maddsoft.hbadgerstation.storage.FilterCollection;
@@ -31,20 +30,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.controlsfx.control.GridView;
 
 @Slf4j
-public class LibraryViewController implements GridCellSelectionController {
+public class LibraryViewController extends PrintableThingGridSelectionController {
 
   @FXML private Button deleteButton;
   @FXML private GridView<VBox> libraryView;
   @FXML private VBox librarySidebar;
   @FXML private Button openExplorerButton ;
 
-  private final DatabaseManager databaseManager = new DatabaseManager();
-
   private MainWindowController parent;
-
-  private PrintableThingTableElement selectedItem;
-
-  private final GridViewSelectManager gridViewSelectManager = new GridViewSelectManager();
 
   private LibraryFiltersController filtersController;
 
@@ -52,7 +45,7 @@ public class LibraryViewController implements GridCellSelectionController {
   @Setter
   private File currentDirectory;
 
-  private GridViewPrintableBuilder gridViewBuilder = new GridViewPrintableBuilder();
+  private final GridViewPrintableBuilder gridViewBuilder = new GridViewPrintableBuilder();
 
   @FXML
   private void initialize() {
@@ -124,11 +117,7 @@ public class LibraryViewController implements GridCellSelectionController {
 
   @Override
   public void selectedCell(GridCellController controller) {
-    if (controller == null) {
-      selectedItem = null;
-    }  else {
-      selectedItem = ((PrintableViewController) controller).getPrintableThingTableElement();
-    }
+    super.selectedCell(controller);
     parent.activateModeSwitcher(selectedItem != null);
     deleteButton.setDisable(selectedItem == null);
     if (selectedItem != null) {

@@ -19,6 +19,8 @@ import org.dizitart.no2.repository.annotations.Id;
 @Entity
 public class PrintableThing {
 
+  public static final String PRINTABLE_THING_ID = "printableThingId";
+
   @Id
   private NitriteId printableThingId;
 
@@ -52,7 +54,7 @@ public class PrintableThing {
     @Override
     public Document toDocument(PrintableThing entity, NitriteMapper nitriteMapper) {
       return Document.createDocument()
-          .put("printableThingId", entity.getPrintableThingId())
+          .put(PRINTABLE_THING_ID, entity.getPrintableThingId())
           .put("name", entity.getName())
           .put("description", entity.getDescription())
           .put("authorName", entity.getAuthorName())
@@ -69,7 +71,7 @@ public class PrintableThing {
     @Override
     public PrintableThing fromDocument(Document document, NitriteMapper nitriteMapper) {
       return PrintableThing.builder()
-          .printableThingId(document.get("printableThingId", NitriteId.class))
+          .printableThingId(document.get(PRINTABLE_THING_ID, NitriteId.class))
           .name(document.get("name", String.class))
           .description(document.get("description", String.class))
           .authorName(document.get("authorName", String.class))

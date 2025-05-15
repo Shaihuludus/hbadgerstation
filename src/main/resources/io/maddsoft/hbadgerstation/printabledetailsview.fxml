@@ -43,7 +43,7 @@
                </HBox.margin>
             </Button>
          </children></HBox>
-      <TabPane prefHeight="200.0" prefWidth="200.0" styleClass="classic" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+      <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" styleClass="classic" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
         <tabs>
             <Tab text="General Information">
                <content>

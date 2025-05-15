@@ -3,10 +3,9 @@ package io.maddsoft.hbadgerstation.gui.details;
 import io.maddsoft.hbadgerstation.gui.Controller;
 import io.maddsoft.hbadgerstation.gui.gridview.CustomGridViewSkin;
 import io.maddsoft.hbadgerstation.gui.gridview.GridCellController;
-import io.maddsoft.hbadgerstation.gui.gridview.GridCellSelectionController;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewGridCellCallback;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewPrintableBuilder;
-import io.maddsoft.hbadgerstation.gui.gridview.GridViewSelectManager;
+import io.maddsoft.hbadgerstation.gui.gridview.PrintableThingGridSelectionController;
 import io.maddsoft.hbadgerstation.storage.DatabaseManager;
 import io.maddsoft.hbadgerstation.storage.FilterCollection;
 import io.maddsoft.hbadgerstation.storage.entities.Author;
@@ -24,15 +23,11 @@ import org.controlsfx.control.HyperlinkLabel;
 import org.dizitart.no2.collection.NitriteId;
 
 @Slf4j
-public class AuthorTabController implements GridCellSelectionController {
+public class AuthorTabController extends PrintableThingGridSelectionController {
 
   private PrintableDetailsViewController detailsViewController;
 
   private Author author;
-
-  private DatabaseManager databaseManager = new DatabaseManager();
-
-  private final GridViewSelectManager gridViewSelectManager = new GridViewSelectManager();
 
   @FXML private ComboBox<Author> authorChooseBox;
   @FXML private TextField authorNameField;
@@ -42,12 +37,11 @@ public class AuthorTabController implements GridCellSelectionController {
   private NitriteId printableId;
 
   public void initialize(Author author, NitriteId printableId) {
+    gridViewSelectManager.addGridControllerToNotify(this);
     this.author = author;
     this.printableId = printableId;
     authorNameField.setText(author.getAuthorName());
-    authorNameField.textProperty().addListener((_, _, newValue) -> {
-      detailsViewController.changeHappened();
-    });
+    authorNameField.textProperty().addListener((_, _, _) -> detailsViewController.changeHappened());
     authorWebsiteField.setText("[" + author.getWebsiteUrl() + "]");
     modelsGrid.setItems(FXCollections.observableArrayList(prepareAuthorModels()));
     modelsGrid.setCellHeight(400);
@@ -87,13 +81,8 @@ public class AuthorTabController implements GridCellSelectionController {
   }
 
   @Override
-  public void selectedCell(GridCellController controller) {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  @Override
   public void performAction() {
-    throw new UnsupportedOperationException("Not supported yet.");
+    detailsViewController.switchSelectedPrintableThing(selectedItem);
   }
 
   @Override

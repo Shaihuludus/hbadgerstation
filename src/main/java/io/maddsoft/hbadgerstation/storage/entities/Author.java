@@ -20,6 +20,8 @@ import org.dizitart.no2.repository.annotations.Index;
 })
 public class Author {
 
+  public static final String AUTHOR_NAME = "authorName";
+
   @Id
   private String authorName;
 
@@ -40,14 +42,14 @@ public class Author {
     @Override
     public Document toDocument(Author entity, NitriteMapper nitriteMapper) {
       return Document.createDocument()
-          .put("authorName", entity.getAuthorName())
+          .put(AUTHOR_NAME, entity.getAuthorName())
           .put("websiteUrl", entity.getWebsiteUrl());
     }
 
     @Override
     public Author fromDocument(Document document, NitriteMapper nitriteMapper) {
       return Author.builder()
-          .authorName(document.get("authorName", String.class))
+          .authorName(document.get(AUTHOR_NAME, String.class))
           .websiteUrl(document.get("websiteUrl", String.class))
           .build();
     }

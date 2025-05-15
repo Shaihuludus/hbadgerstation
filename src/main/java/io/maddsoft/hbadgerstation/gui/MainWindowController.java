@@ -1,6 +1,7 @@
 package io.maddsoft.hbadgerstation.gui;
 
 import io.maddsoft.hbadgerstation.gui.details.PrintableDetailsViewController;
+import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement;
 import io.maddsoft.hbadgerstation.gui.library.LibraryViewController;
 import java.io.IOException;
 import javafx.fxml.FXML;
@@ -60,6 +61,14 @@ public class MainWindowController implements Controller {
     libraryViewController.postConstruct();
   }
 
+  public void switchSeletedItem(PrintableThingTableElement selectedItem) {
+    nitriteId = selectedItem.getPrintableThingId();
+    try {
+      detailsViewActivated();
+    } catch (IOException e) {
+      log.error(e.getMessage());
+    }
+  }
 
   @FXML
   private void initialize() throws IOException {
@@ -96,6 +105,9 @@ public class MainWindowController implements Controller {
     }
     if (libraryViewController == null) {
       libraryViewController = fxmlLoader.getController();
+    }
+    if (nitriteId != null && libraryViewController.getSelectedItem() != null && !nitriteId.equals(libraryViewController.getSelectedItem().getPrintableThingId())) {
+      nitriteId = libraryViewController.getSelectedItem().getPrintableThingId();
     }
     addToView(libraryView);
   }

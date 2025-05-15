@@ -2,6 +2,7 @@ package io.maddsoft.hbadgerstation.gui.details;
 
 import io.maddsoft.hbadgerstation.gui.Controller;
 import io.maddsoft.hbadgerstation.gui.MainWindowController;
+import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement;
 import io.maddsoft.hbadgerstation.storage.DatabaseManager;
 import io.maddsoft.hbadgerstation.storage.entities.Author;
 import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
@@ -11,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
@@ -24,6 +26,7 @@ import org.dizitart.no2.collection.NitriteId;
 @Slf4j
 public class PrintableDetailsViewController implements Controller {
 
+  @FXML private TabPane tabPane;
   @FXML private ToggleButton lockButton;
   @FXML private Button revertButton;
   @FXML private Button updateButton;
@@ -76,12 +79,7 @@ public class PrintableDetailsViewController implements Controller {
     activateEdition(false);
     updateButton.setDisable(true);
     revertButton.setDisable(true);
-  }
-
-  @FXML
-  private void initialize() {
-    lockButton.selectedProperty().addListener((_, _, newValue) -> activateEdition(!newValue));
-
+    tabPane.getSelectionModel().select(0);
   }
 
   @Override
@@ -92,6 +90,17 @@ public class PrintableDetailsViewController implements Controller {
   public void changeHappened() {
     revertButton.setDisable(false);
     updateButton.setDisable(false);
+  }
+
+  public void switchSelectedPrintableThing(PrintableThingTableElement selectedItem) {
+    parent.switchSeletedItem(selectedItem);
+    tabPane.getSelectionModel().select(0);
+  }
+
+  @FXML
+  private void initialize() {
+    lockButton.selectedProperty().addListener((_, _, newValue) -> activateEdition(!newValue));
+
   }
 
   private void updatePrintable(ActionEvent actionEvent) {

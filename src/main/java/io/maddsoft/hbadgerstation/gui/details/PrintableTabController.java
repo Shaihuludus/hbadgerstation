@@ -34,9 +34,7 @@ public class PrintableTabController implements Controller {
     printableTree.setRoot(new TreeItem<>(new PrintableTextPath(root, directoryPath), new Glyph("FontAwesome", FontAwesome.Glyph.FOLDER)));
     printableFiles.forEach(this::createTreePath);
     printableTree.getRoot().setExpanded(true);
-    printableTree.getSelectionModel().selectedItemProperty().addListener((_, oldValue, newValue) -> {
-      activate();
-    });
+    printableTree.getSelectionModel().selectedItemProperty().addListener((_, _, _) -> activate());
   }
 
   private void activate() {

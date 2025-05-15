@@ -30,15 +30,14 @@ public class PrintableDetailsViewController implements Controller {
   @FXML private ToggleButton lockButton;
   @FXML private Button revertButton;
   @FXML private Button updateButton;
-  @FXML private TextField nameField;
-  @FXML private TextArea descriptionField;
-  @FXML private TextField directoryPathField;
   @FXML private Tab imagesTab;
   @FXML private Tab printableTab;
   @FXML private Tab authorTab;
+  @FXML private Tab generalTab;
 
 
   private AuthorTabController authorTabController;
+  private GeneralTabController generalTabController;
   private final DatabaseManager databaseManager = new DatabaseManager();
 
   private PrintableThing printableThing;
@@ -50,18 +49,15 @@ public class PrintableDetailsViewController implements Controller {
       return;
     }
     printableThing = databaseManager.getPrintableThingById(nitriteId);
-    if (printableThing != null) {
-      nameField.setText(printableThing.getName());
-      nameField.textProperty().addListener((_, _, newValue) -> {
-        if (!printableThing.getName().equals(newValue)){
-          changeHappened();
-        }
-      });
-      descriptionField.setText(printableThing.getDescription());
-      directoryPathField.setText(printableThing.getDirectoryPath());
+    if(printableThing != null) {
       updateButton.setOnAction(this::updatePrintable);
       try {
-        setupAuthorTabPane(printableThing.getAuthorName());
+        setupGeneralTab();
+      } catch (IOException e) {
+        log.error(e.getMessage(), e);
+      }
+      try {
+        setupAuthorTabPane();
       } catch (IOException e) {
         log.error(e.getMessage(), e);
       }
@@ -104,9 +100,7 @@ public class PrintableDetailsViewController implements Controller {
   }
 
   private void updatePrintable(ActionEvent actionEvent) {
-    printableThing.setName(nameField.getText());
-    printableThing.setDescription(descriptionField.getText());
-    printableThing.setDirectoryPath(directoryPathField.getText());
+    generalTabController.updatePrintableThing();
     boolean isNewAuthor = authorTabController.isNewAuthor();
     Author author = authorTabController.updateAuthor();
     printableThing.setAuthorName(author.getAuthorName());
@@ -120,11 +114,19 @@ public class PrintableDetailsViewController implements Controller {
   }
 
   private void activateEdition(boolean lock) {
-    nameField.setEditable(lock);
-    descriptionField.setEditable(lock);
-    directoryPathField.setEditable(lock);
     lockButton.setGraphic(!lock ? new Glyph("FontAwesome", FontAwesome.Glyph.LOCK) : new Glyph("FontAwesome", FontAwesome.Glyph.UNLOCK));
     authorTabController.setEditable(lock);
+    generalTabController.setEditable(lock);
+  }
+
+  private void setupGeneralTab() throws IOException {
+    FXMLLoader fxmlLoader = new FXMLLoader();
+    fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/details/generaltab.fxml"));
+    Region view = fxmlLoader.load();
+    generalTabController = fxmlLoader.getController();
+    generalTabController.initialize(printableThing);
+    generalTabController.setParent(this);
+    generalTab.setContent(view);
   }
 
   private void setupPrintableTab() throws IOException {
@@ -145,8 +147,8 @@ public class PrintableDetailsViewController implements Controller {
     imagesTab.setContent(view);
   }
 
-  private void setupAuthorTabPane(String authorName) throws IOException {
-    Author author = databaseManager.getAuthorByName(authorName);
+  private void setupAuthorTabPane() throws IOException {
+    Author author = databaseManager.getAuthorByName(printableThing.getAuthorName());
     if (author != null) {
       FXMLLoader fxmlLoader = new FXMLLoader();
       fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/details/authortab.fxml"));

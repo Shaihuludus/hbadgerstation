@@ -1,5 +1,7 @@
 package io.maddsoft.hbadgerstation.storage.entities;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +22,8 @@ import org.dizitart.no2.repository.annotations.Id;
 public class PrintableThing {
 
   public static final String PRINTABLE_THING_ID = "printableThingId";
+
+  public static final List<String> PRINTABLE_THING_TYPES = List.of("Resin", "FDM", "Resin and FDM");
 
   @Id
   private NitriteId printableThingId;
@@ -77,6 +81,7 @@ public class PrintableThing {
           .authorName(document.get("authorName", String.class))
           .printFilenames(document.get("printFilenames", List.class))
           .images(document.get("images", List.class))
+          .type(document.get("type", String.class))
           .otherFiles(document.get("otherFiles", List.class))
           .tags(document.get("tags", List.class))
           .directory(document.get("directory", Boolean.class))

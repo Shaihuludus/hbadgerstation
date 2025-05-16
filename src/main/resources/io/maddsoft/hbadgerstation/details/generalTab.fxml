@@ -1,42 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="io.maddsoft.hbadgerstation.gui.details.GeneralTabController">
-  <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" />
-    <ColumnConstraints hgrow="SOMETIMES" />
-  </columnConstraints>
-  <rowConstraints>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-  </rowConstraints>
-  <children>
-    <GridPane alignment="CENTER">
-      <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-      </columnConstraints>
-      <rowConstraints>
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-      </rowConstraints>
-      <children>
-        <Label prefHeight="20.0" prefWidth="212.0" text="Name" GridPane.halignment="RIGHT" />
-        <TextField fx:id="nameField" editable="false" GridPane.columnIndex="1" />
-        <Label prefHeight="20.0" prefWidth="212.0" text="Description" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-        <TextArea fx:id="descriptionField" editable="false" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-        <Label prefWidth="212.0" text="Path" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-        <TextField fx:id="directoryPathField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      </children>
-      <GridPane.margin>
-        <Insets />
-      </GridPane.margin>
-    </GridPane>
-  </children>
-</GridPane>
+<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.maddsoft.hbadgerstation.gui.details.GeneralTabController">
+   <children>
+      <HBox alignment="CENTER_LEFT">
+         <children>
+        <Label prefWidth="212.0" text="Name" />
+        <TextField fx:id="nameField" editable="false" prefWidth="724.0" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="10.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox alignment="CENTER_LEFT">
+         <children>
+        <Label prefHeight="20.0" prefWidth="212.0" text="Description" />
+        <TextArea fx:id="descriptionField" editable="false" prefWidth="724.0" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="10.0" top="10.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox alignment="CENTER_LEFT">
+         <children>
+        <Label prefWidth="212.0" text="Path" />
+        <TextField fx:id="directoryPathField" editable="false" prefWidth="724.0" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="10.0" top="10.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox alignment="CENTER_LEFT">
+         <children>
+            <Label prefWidth="212.0" text="Type" />
+            <TextField fx:id="typeField" editable="false" />
+            <ComboBox fx:id="typeSelectBox" visible="false" disable="true"/>
+         </children>
+         <VBox.margin>
+            <Insets bottom="10.0" top="10.0" />
+         </VBox.margin>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="15.0" right="10.0" top="15.0" />
+   </padding>
+</VBox>

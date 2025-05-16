@@ -4,13 +4,17 @@ import io.maddsoft.hbadgerstation.gui.Controller;
 import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
 import java.util.Objects;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 public class GeneralTabController implements Controller {
 
+  @FXML private TextField typeField;
+  @FXML private ComboBox<String> typeSelectBox;
   @FXML private TextField nameField;
   @FXML private TextArea descriptionField;
   @FXML private TextField directoryPathField;
@@ -21,6 +25,7 @@ public class GeneralTabController implements Controller {
 
   public void initialize(PrintableThing printableThing) {
     this.printableThing = printableThing;
+    typeSelectBox.getItems().addAll(PrintableThing.PRINTABLE_THING_TYPES);
     if (this.printableThing != null) {
       nameField.setText(this.printableThing.getName());
       nameField.textProperty().addListener((_, _, newValue) -> {
@@ -36,6 +41,16 @@ public class GeneralTabController implements Controller {
         }
       });
       directoryPathField.setText(this.printableThing.getDirectoryPath());
+      typeField.setText(this.printableThing.getType());
+      if (StringUtils.isNotBlank(this.printableThing.getType())) {
+        typeSelectBox.getSelectionModel().select(this.printableThing.getType());
+      }
+      typeSelectBox.valueProperty().addListener((_, _, newValue) -> {
+        if (!Objects.equals(this.printableThing.getType(), newValue)){
+          typeField.setText(newValue);
+          parent.changeHappened();
+        }
+      });
     }
   }
 
@@ -48,11 +63,23 @@ public class GeneralTabController implements Controller {
     nameField.setEditable(lock);
     descriptionField.setEditable(lock);
     directoryPathField.setEditable(lock);
+    if (lock) {
+      typeSelectBox.setDisable(false);
+      typeSelectBox.setVisible(true);
+      typeField.setVisible(false);
+      typeField.setManaged(false);
+    } else {
+      typeSelectBox.setDisable(true);
+      typeSelectBox.setVisible(false);
+      typeField.setVisible(true);
+      typeField.setManaged(true);
+    }
   }
 
   public void updatePrintableThing() {
     printableThing.setName(nameField.getText());
     printableThing.setDescription(descriptionField.getText());
     printableThing.setDirectoryPath(directoryPathField.getText());
+    printableThing.setType(typeField.getText());
   }
 }

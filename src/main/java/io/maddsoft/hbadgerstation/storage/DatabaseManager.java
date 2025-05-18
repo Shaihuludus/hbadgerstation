@@ -3,6 +3,7 @@ package io.maddsoft.hbadgerstation.storage;
 import io.maddsoft.hbadgerstation.storage.entities.Author;
 import io.maddsoft.hbadgerstation.storage.entities.Collection;
 import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
+import io.maddsoft.hbadgerstation.storage.entities.TagEntity;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.collection.NitriteId;
@@ -101,5 +102,20 @@ public class DatabaseManager {
     } catch (NitriteException e) {
       log.error(e.getMessage());
     }
+  }
+
+  public List<String> getTags() {
+    return nitriteManager.getTagsRepository()
+        .find()
+        .toList()
+        .stream()
+        .map(TagEntity::toString).toList();
+  }
+
+  public void addTag(String tagName) {
+    if (null == nitriteManager.getTagsRepository().getById(tagName)) {
+      nitriteManager.getTagsRepository().insert(new TagEntity(tagName));
+    }
+
   }
 }

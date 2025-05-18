@@ -7,6 +7,7 @@ import io.maddsoft.hbadgerstation.storage.entities.Author;
 import io.maddsoft.hbadgerstation.storage.entities.Collection;
 import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
 import io.maddsoft.hbadgerstation.storage.entities.PrintableThing.PrintableConverter;
+import io.maddsoft.hbadgerstation.storage.entities.TagEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.mvstore.MVStoreModule;
@@ -42,6 +43,7 @@ log.info("Opening Nitrite DB...");
     documentMapper.registerEntityConverter(new Author.AuthorConverter());
     documentMapper.registerEntityConverter(new PrintableConverter());
     documentMapper.registerEntityConverter(new Collection.CollectionConverter());
+    documentMapper.registerEntityConverter(new TagEntity.TagConverter());
 
     db = Nitrite.builder()
         .loadModule(storeModule)
@@ -68,6 +70,13 @@ log.info("Opening Nitrite DB...");
       openDb();
     }
     return db.getRepository(Collection.class);
+  }
+
+  public ObjectRepository<TagEntity> getTagsRepository() {
+    if (db == null) {
+      openDb();
+    }
+    return db.getRepository(TagEntity.class);
   }
 
   public void closeDb() {

@@ -2,11 +2,9 @@ package io.maddsoft.hbadgerstation.gui.details;
 
 import io.maddsoft.hbadgerstation.gui.Controller;
 import io.maddsoft.hbadgerstation.gui.gridview.CustomGridViewSkin;
-import io.maddsoft.hbadgerstation.gui.gridview.GridCellController;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewGridCellCallback;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewPrintableBuilder;
 import io.maddsoft.hbadgerstation.gui.gridview.PrintableThingGridSelectionController;
-import io.maddsoft.hbadgerstation.storage.DatabaseManager;
 import io.maddsoft.hbadgerstation.storage.FilterCollection;
 import io.maddsoft.hbadgerstation.storage.entities.Author;
 import java.util.Collections;

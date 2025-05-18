@@ -113,6 +113,7 @@ public class PrintableDetailsViewController implements Controller {
 
   private void activateEdition(boolean lock) {
     lockButton.setGraphic(!lock ? new Glyph("FontAwesome", FontAwesome.Glyph.LOCK) : new Glyph("FontAwesome", FontAwesome.Glyph.UNLOCK));
+    lockButton.setSelected(!lock);
     authorTabController.setEditable(lock);
     generalTabController.setEditable(lock);
   }

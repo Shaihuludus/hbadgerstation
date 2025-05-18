@@ -1,4 +1,4 @@
-package io.maddsoft.hbadgerstation.gui.elements;
+package io.maddsoft.hbadgerstation.gui.support;
 
 import io.maddsoft.hbadgerstation.cache.ImageCache;
 import io.maddsoft.hbadgerstation.gui.GUIDefaults;

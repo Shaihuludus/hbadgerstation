@@ -133,6 +133,8 @@
         <version>${javafx.maven.plugin.version}</version>
         <configuration>
           <mainClass>io.maddsoft.hbadgerstation.HBadgerStation</mainClass>
+          <options>--add-exports=javafx.base/com.sun.javafx.event=ALL-UNNAMED</options>
+          <stripDebug>true</stripDebug>
         </configuration>
       </plugin>
     </plugins>

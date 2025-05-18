@@ -171,6 +171,9 @@ public class GeneralTabController implements Controller, PillsController {
     fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/controls/removablePill.fxml"));
     Node tag = fxmlLoader.load();
     RemovablePill controller =fxmlLoader.getController();
+    if (newTagsGroup.isVisible()) {
+      controller.disableRemoveButton(false);
+    }
     controller.setParent(this);
     controller.initialize(name);
     return tag;

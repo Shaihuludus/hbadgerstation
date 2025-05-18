@@ -1,6 +1,6 @@
 package io.maddsoft.hbadgerstation.gui.gridview;
 
-import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement;
+import io.maddsoft.hbadgerstation.gui.support.PrintableThingTableElement;
 import io.maddsoft.hbadgerstation.gui.printableview.PrintableViewController;
 import io.maddsoft.hbadgerstation.storage.DatabaseManager;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package io.maddsoft.hbadgerstation.gui.printableview;
 
 import io.maddsoft.hbadgerstation.gui.GUIDefaults;
-import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement;
+import io.maddsoft.hbadgerstation.gui.support.PrintableThingTableElement;
 import io.maddsoft.hbadgerstation.gui.gridview.GridCellController;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewSelectManager;
 import java.util.Objects;

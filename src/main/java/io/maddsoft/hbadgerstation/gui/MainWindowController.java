@@ -1,7 +1,7 @@
 package io.maddsoft.hbadgerstation.gui;
 
 import io.maddsoft.hbadgerstation.gui.details.PrintableDetailsViewController;
-import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement;
+import io.maddsoft.hbadgerstation.gui.support.PrintableThingTableElement;
 import io.maddsoft.hbadgerstation.gui.library.LibraryViewController;
 import java.io.IOException;
 import javafx.fxml.FXML;

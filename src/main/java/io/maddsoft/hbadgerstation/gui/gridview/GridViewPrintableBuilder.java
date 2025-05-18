@@ -1,7 +1,7 @@
 package io.maddsoft.hbadgerstation.gui.gridview;
 
 import io.maddsoft.hbadgerstation.gui.GUIDefaults;
-import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement.PrintableThingTableElementConverter;
+import io.maddsoft.hbadgerstation.gui.support.PrintableThingTableElement.PrintableThingTableElementConverter;
 import io.maddsoft.hbadgerstation.gui.printableview.PrintableViewController;
 import io.maddsoft.hbadgerstation.storage.DatabaseManager;
 import io.maddsoft.hbadgerstation.storage.FilterCollection;

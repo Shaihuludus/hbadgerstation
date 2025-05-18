@@ -2,7 +2,7 @@ package io.maddsoft.hbadgerstation.gui.details;
 
 import io.maddsoft.hbadgerstation.gui.Controller;
 import io.maddsoft.hbadgerstation.gui.MainWindowController;
-import io.maddsoft.hbadgerstation.gui.elements.PrintableThingTableElement;
+import io.maddsoft.hbadgerstation.gui.support.PrintableThingTableElement;
 import io.maddsoft.hbadgerstation.storage.DatabaseManager;
 import io.maddsoft.hbadgerstation.storage.entities.Author;
 import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;

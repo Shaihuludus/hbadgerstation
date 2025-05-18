@@ -56,7 +56,7 @@ public class DatabaseManager {
 
   public List<PrintableThing> getPrintableThings(FilterCollection filterCollection) {
     if (filterCollection.isFiltering()) {
-      return nitriteManager.getPrintableThingRepository().find(filterCollection.filtersToQuery()).toList();
+      return nitriteManager.getPrintableThingRepository().find(filterCollection.filtersToQuery(true)).toList();
     }
     return nitriteManager.getPrintableThingRepository().find().toList();
   }
@@ -87,7 +87,7 @@ public class DatabaseManager {
 
   public List<Collection> getCollections(FilterCollection filterCollection) {
     if (filterCollection.isFiltering()) {
-      return nitriteManager.getCollectionRepository().find(filterCollection.filtersToQuery()).toList();
+      return nitriteManager.getCollectionRepository().find(filterCollection.filtersToQuery(false)).toList();
     }
     return nitriteManager.getCollectionRepository().find().toList();
   }
@@ -116,6 +116,10 @@ public class DatabaseManager {
     if (null == nitriteManager.getTagsRepository().getById(tagName)) {
       nitriteManager.getTagsRepository().insert(new TagEntity(tagName));
     }
+  }
 
+  public void refreshSearchIndex() {
+    List<PrintableThing> list = nitriteManager.getPrintableThingRepository().find().toList();
+    list.forEach(printableThing -> nitriteManager.getPrintableThingRepository().update(printableThing));
   }
 }

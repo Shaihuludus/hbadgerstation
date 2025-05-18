@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.Getter;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 import org.dizitart.no2.collection.NitriteId;
 import org.dizitart.no2.filters.FluentFilter;
 import org.dizitart.no2.filters.NitriteFilter;
@@ -16,12 +17,21 @@ public class FilterCollection {
   private final HashMap<String, List<String>> filters = new HashMap<>();
   private final HashMap<String, List<NitriteId>> notIdFilters = new HashMap<>();
   private final HashMap<String, List<NitriteId>> idFilters = new HashMap<>();
+  private String textFilter = StringUtils.EMPTY;
 
   public void setFilter(String filterName, List<String> filterValues) {
     if (filterValues == null || filterValues.isEmpty()) {
      filters.remove(filterName);
     } else {
       filters.put(filterName, filterValues);
+    }
+  }
+
+  public void setTextFilter(String value) {
+    if (StringUtils.isNotBlank(value) ) {
+      textFilter = value;
+    } else {
+      textFilter = StringUtils.EMPTY;
     }
   }
 
@@ -42,15 +52,19 @@ public class FilterCollection {
   }
 
   public boolean isFiltering() {
-    return !filters.isEmpty() || !notIdFilters.isEmpty() || !idFilters.isEmpty();
+    return !filters.isEmpty() || !notIdFilters.isEmpty() || !idFilters.isEmpty() || StringUtils.isNotBlank(textFilter);
   }
 
   public void clearFilters() {
     filters.clear();
   }
 
-  public NitriteFilter filtersToQuery() {
+  public NitriteFilter filtersToQuery(boolean withText) {
     NitriteFilter transformerdFilter = null;
+    //always start with text filters
+    if (withText && StringUtils.isNotBlank(textFilter)) {
+      transformerdFilter = FluentFilter.where("searchIndex").text(textFilter);
+    }
     transformerdFilter = buildStringInFilters(transformerdFilter);
     transformerdFilter = buildNotInIdFilters(transformerdFilter);
     transformerdFilter = buildInIdFilters(transformerdFilter);
@@ -89,4 +103,5 @@ public class FilterCollection {
       }
     return transformerdFilter;
   }
+
 }

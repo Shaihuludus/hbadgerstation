@@ -1,8 +1,7 @@
 package io.maddsoft.hbadgerstation.storage.entities;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,14 +10,18 @@ import org.dizitart.no2.collection.Document;
 import org.dizitart.no2.collection.NitriteId;
 import org.dizitart.no2.common.mapper.EntityConverter;
 import org.dizitart.no2.common.mapper.NitriteMapper;
+import org.dizitart.no2.index.IndexType;
 import org.dizitart.no2.repository.annotations.Entity;
 import org.dizitart.no2.repository.annotations.Id;
+import org.dizitart.no2.repository.annotations.Index;
 
 @Getter
 @Setter
 @ToString
 @Builder
-@Entity
+@Entity(indices = {
+    @Index(fields = {"searchIndex"}, type = IndexType.FULL_TEXT)
+})
 public class PrintableThing {
 
   public static final String PRINTABLE_THING_ID = "printableThingId";
@@ -48,6 +51,8 @@ public class PrintableThing {
 
   private String directoryPath;
 
+  private String searchIndex;
+
   public static class PrintableConverter implements EntityConverter<PrintableThing> {
 
     @Override
@@ -68,7 +73,17 @@ public class PrintableThing {
           .put("type", entity.getType())
           .put("tags", entity.getTags())
           .put("directory", entity.getDirectory())
-          .put("directoryPath", entity.getDirectoryPath());
+          .put("directoryPath", entity.getDirectoryPath())
+          .put("searchIndex", entity.getName() + " " + entity.getAuthorName() + " " + tagsToString(entity.getTags()));
+    }
+
+    private String tagsToString(List<String> tags) {
+      if (tags != null && !tags.isEmpty()) {
+        StringBuilder tagsString  = new StringBuilder();
+        tags.forEach(tag -> tagsString.append(tag).append(" "));
+        return tagsString.toString();
+      }
+      return "";
     }
 
     @SuppressWarnings("unchecked")

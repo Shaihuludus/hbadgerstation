@@ -11,12 +11,17 @@ import java.util.List;
 
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import lombok.Getter;
 import org.controlsfx.control.CheckComboBox;
 
 public class LibraryFiltersController implements Controller {
 
+  @FXML private Button cleaFiltersButton;
+  @FXML private TextField searchField;
+  @FXML private Button searchButton;
   @FXML private CheckComboBox<Author> authorsFilter;
 
   @FXML private ListView<Collection> collectionList;
@@ -60,6 +65,12 @@ public class LibraryFiltersController implements Controller {
       }
       parent.refreshDataViews();
     });
+
+    searchButton.setOnAction(_ -> {
+      filterCollection.setTextFilter(searchField.getText());
+      parent.refreshDataViews();
+    });
+
     refreshCollections();
   }
 

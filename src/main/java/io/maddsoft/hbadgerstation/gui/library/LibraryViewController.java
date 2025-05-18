@@ -47,7 +47,6 @@ public class LibraryViewController extends PrintableThingGridSelectionController
   @FXML
   private void initialize() {
     gridViewSelectManager.addGridControllerToNotify(this);
-
     libraryView.setItems(FXCollections.observableArrayList(gridViewBuilder.buildPrintable(new FilterCollection(), gridViewSelectManager, true)));
     libraryView.setCellHeight(400);
     libraryView.setCellWidth(400);

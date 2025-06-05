@@ -1,6 +1,7 @@
 package io.maddsoft.hbadgerstation.gui.details;
 
 import io.maddsoft.hbadgerstation.gui.Controller;
+import io.maddsoft.hbadgerstation.gui.preview.PreviewWindowController;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -8,9 +9,13 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.glyphfont.FontAwesome;
@@ -21,6 +26,10 @@ public class PrintableTabController implements Controller {
 
   @FXML private TreeView<PrintableTextPath> printableTree;
   @FXML private Button openButton;
+  @FXML private Button showSTLButton;
+
+  private Stage previewWindowStage;
+  private PreviewWindowController previewWindowController;
 
   private String directoryPath;
 
@@ -39,6 +48,13 @@ public class PrintableTabController implements Controller {
 
   private void activate() {
     openButton.setDisable(false);
+    showSTLButton.setDisable(false);
+    TreeItem<PrintableTextPath> selectedItem = printableTree.getSelectionModel()
+        .getSelectedItem();
+    if(selectedItem != null) {
+      String path = selectedItem.getValue().getPath();
+      showSTLButton.setDisable(!StringUtils.substringAfterLast(path, ".").equalsIgnoreCase("stl"));
+    }
   }
 
   private void createTreePath(String printableFilePath) {
@@ -81,6 +97,32 @@ public class PrintableTabController implements Controller {
       }
     } catch (IOException e) {
       log.error(e.getMessage(), e);
+    }
+  }
+
+  public void renderStlFile() {
+    TreeItem<PrintableTextPath> selectedItem = printableTree.getSelectionModel()
+        .getSelectedItem();
+    if ( previewWindowStage == null || previewWindowController == null ) {
+      createPreviewStage();
+    }
+    previewWindowStage.show();
+    previewWindowController.initialize(selectedItem.getValue().getPath());
+  }
+
+  private void createPreviewStage() {
+    try {
+      FXMLLoader fxmlLoader = new FXMLLoader();
+      fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/previewwindow.fxml"));
+      Parent view = fxmlLoader.load();
+      previewWindowController = fxmlLoader.getController();
+      previewWindowController.setParent(this);
+      Scene scene = new Scene(view);
+      previewWindowStage = new Stage();
+      previewWindowStage.setResizable(true);
+      previewWindowStage.setScene(scene);
+    } catch (IOException e) {
+      log.error("Failed to create new Window.", e);
     }
   }
 }

@@ -125,6 +125,10 @@
               <version>1.18.38</version>
             </path>
           </annotationProcessorPaths>
+          <compilerArgs>
+            <arg>--add-exports</arg>
+            <arg>org.controlsfx.controls/impl.org.controlsfx.skin=hbadgerstation</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
       <plugin>
@@ -133,7 +137,7 @@
         <version>${javafx.maven.plugin.version}</version>
         <configuration>
           <mainClass>io.maddsoft.hbadgerstation.HBadgerStation</mainClass>
-          <options>--add-exports=javafx.base/com.sun.javafx.event=ALL-UNNAMED</options>
+          <options>--add-exports=javafx.base/com.sun.javafx.event=ALL-UNNAMED --add-exports=org.controlsfx.controls/impl.org.controlsfx.skin=hbadgerstation</options>
           <stripDebug>true</stripDebug>
         </configuration>
       </plugin>

@@ -1,4 +1,3 @@
-
 package io.maddsoft.hbadgerstation.stl;
 
 import javafx.geometry.Point3D;

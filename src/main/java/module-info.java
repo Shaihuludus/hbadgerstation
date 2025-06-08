@@ -23,4 +23,6 @@ module hbadgerstation {
   opens io.maddsoft.hbadgerstation.gui.details;
   opens io.maddsoft.hbadgerstation.gui.preview;
   opens io.maddsoft.hbadgerstation.gui.controls;
+  opens io.maddsoft.hbadgerstation.storage;
+  opens io.maddsoft.hbadgerstation.storage.entities;
 }

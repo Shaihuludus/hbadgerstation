@@ -40,7 +40,7 @@ public class Settings {
   }
 
   public static Set<String> getSet(String section, String key, String defaultValue) {
-    String value = instance.iniConfiguration.getSection(section).getString(key);
+    String value = instance.iniConfiguration.getSection(section).getString(key, defaultValue);
     if (StringUtils.isNotBlank(value)) {
       return Arrays.stream(value.split(","))
           .map(string-> string.trim().toLowerCase())

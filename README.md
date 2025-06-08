@@ -34,7 +34,7 @@ cacheWhenImport=1 - cache images on import (if off and cache is on it will be do
 cacheDirectory="./cache" - cache directory
 
 [database]
-dbPath="library.db" - file to stora data
+dbPath="library.db" - file to store data
 
 [file types]
 printableFiles="stl,3mf" - extensions for files that can be 3d printed

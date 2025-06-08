@@ -42,7 +42,7 @@ images="jpg,jpeg,png" - extensions for images
 ```
 Cache should be turned on - it contains scaled images and make javafx work faster
 
-## Running program.
+## How to run application
 From source _mvn javafx:run_
 
 There is also zip with executable prepared for Windows - this one can be downloaded and run after unpacking. It contains java machine

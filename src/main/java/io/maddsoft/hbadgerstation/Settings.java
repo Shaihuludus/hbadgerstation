@@ -22,6 +22,7 @@ public class Settings {
 
   private Settings() {
     iniConfiguration = new INIConfiguration();
+
     try (FileReader fileReader = new FileReader("config.ini")) {
       iniConfiguration.read(fileReader);
       iniConfiguration.setThrowExceptionOnMissing(false);
@@ -29,15 +30,6 @@ public class Settings {
       log.error(e.getMessage());
     }
   }
-
-  public static String getString(String section, String key) {
-    return instance.iniConfiguration.getSection(section).getString(key);
-  }
-
-  public static int getInt(String section, String key) {
-    return instance.iniConfiguration.getSection(section).getInt(key);
-  }
-
 
   public static String getString(String section, String key, String defaultValue) {
     return instance.iniConfiguration.getSection(section).getString(key, defaultValue);
@@ -47,7 +39,7 @@ public class Settings {
     return instance.iniConfiguration.getSection(section).getInt( key, defaultValue);
   }
 
-  public static Set<String> getSet(String section, String key) {
+  public static Set<String> getSet(String section, String key, String defaultValue) {
     String value = instance.iniConfiguration.getSection(section).getString(key);
     if (StringUtils.isNotBlank(value)) {
       return Arrays.stream(value.split(","))

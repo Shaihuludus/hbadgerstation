@@ -36,8 +36,8 @@ public class ModelImporter {
   public ModelImporter(File directory, String authorName) {
     this.directory = directory;
     this.authorName = authorName;
-    printableFilesExtensions = Settings.getSet("file types", "printableFiles");
-    imagesExtensions = Settings.getSet("file types","images");
+    printableFilesExtensions = Settings.getSet("file types", "printableFiles", "stl,3mf");
+    imagesExtensions = Settings.getSet("file types","images", "jpg,jpeg,png");
   }
 
   public ModelImporter(File directory, String authorName, boolean root, boolean createCollection) {

@@ -6,7 +6,7 @@
 
   <groupId>io.maddsoft</groupId>
   <artifactId>hbadgerstation</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.1-SNAPSHOT</version>
 
   <properties>
     <maven.compiler.source>24</maven.compiler.source>
@@ -140,6 +140,67 @@
           <options>--add-exports=javafx.base/com.sun.javafx.event=ALL-UNNAMED --add-exports=org.controlsfx.controls/impl.org.controlsfx.skin=hbadgerstation</options>
           <stripDebug>true</stripDebug>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <outputDirectory>target/jmods</outputDirectory>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeScope>runtime</includeScope>
+              <outputDirectory>target/jmods</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.panteleyev</groupId>
+        <artifactId>jpackage-maven-plugin</artifactId>
+        <configuration>
+          <name>HBadgerStation</name>
+          <appVersion>0.1</appVersion>
+          <vendor>Maddsoft</vendor>
+          <licenseFile>LICENSE</licenseFile>
+          <runtimeImage>${env.JAVA_HOME}</runtimeImage>
+          <module>hbadgerstation/io.maddsoft.hbadgerstation.HBadgerStation</module>
+          <modulePaths>
+            <modulePath>target/jmods</modulePath>
+          </modulePaths>
+          <destination>target/dist</destination>
+          <copyright>Copyright (c) 2025 Daniel Madejek</copyright>
+          <javaOptions>
+            <option>--enable-preview</option>
+            <option>-Dfile.encoding=UTF-8</option>
+            <option>--add-exports=org.controlsfx.controls/impl.org.controlsfx.skin=hbadgerstation</option>
+            <option>-Xmx8192m</option>
+          </javaOptions>
+        </configuration>
+
+        <executions>
+          <execution>
+            <id>win</id>
+            <configuration>
+              <winMenu>true</winMenu>
+              <winDirChooser>true</winDirChooser>
+              <winUpgradeUuid>8bdc67d2-64c4-40be-ab61-33e3850e5183</winUpgradeUuid>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

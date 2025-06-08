@@ -24,15 +24,12 @@ public class AddPrintableController implements Controller{
 
   @FXML private TextField pathField;
   @FXML private TextField authorField;
-
   @FXML private Button importButton;
   @FXML private CheckBox rootDirectoryCheckbox;
   @FXML private CheckBox collectionCheckbox;
   @FXML private ComboBox<String> authorCombo;
 
-
   private File chosenDirectory;
-
 
   @FXML
   private void initialize() {

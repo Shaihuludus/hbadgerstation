@@ -1,7 +1,6 @@
 package io.maddsoft.hbadgerstation.storage.entities;
 
 import java.util.List;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

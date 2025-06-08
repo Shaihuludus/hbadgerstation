@@ -4,7 +4,7 @@ import io.maddsoft.hbadgerstation.storage.entities.Author;
 
 public class AuthorImporter {
 
-  public final static String DEFAULT_AUTHOR_NAME = "unknown";
+  public static final String DEFAULT_AUTHOR_NAME = "unknown";
 
   private final  DatabaseManager databaseManager = new DatabaseManager();
 

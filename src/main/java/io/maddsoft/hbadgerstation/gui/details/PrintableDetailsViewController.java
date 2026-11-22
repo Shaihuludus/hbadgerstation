@@ -3,6 +3,7 @@ package io.maddsoft.hbadgerstation.gui.details;
 import io.maddsoft.hbadgerstation.gui.Controller;
 import io.maddsoft.hbadgerstation.gui.MainWindowController;
 import io.maddsoft.hbadgerstation.gui.support.PrintableThingTableElement;
+import io.maddsoft.hbadgerstation.storage.AuthorImporter;
 import io.maddsoft.hbadgerstation.storage.DatabaseManager;
 import io.maddsoft.hbadgerstation.storage.entities.Author;
 import io.maddsoft.hbadgerstation.storage.entities.PrintableThing;
@@ -46,29 +47,32 @@ public class PrintableDetailsViewController implements Controller {
     if( printableThing != null && printableThing.getPrintableThingId().equals(nitriteId)) {
       return;
     }
-    printableThing = databaseManager.getPrintableThingById(nitriteId);
-    if(printableThing != null) {
-      updateButton.setOnAction(this::updatePrintable);
-      try {
-        setupGeneralTab();
-      } catch (IOException e) {
-        log.error(e.getMessage(), e);
-      }
-      try {
-        setupAuthorTabPane();
-      } catch (IOException e) {
-        log.error(e.getMessage(), e);
-      }
-      try {
-        setupImageTab();
-      } catch (IOException e) {
-        log.error(e.getMessage(), e);
-      }
-      try {
-        setupPrintableTab();
-      } catch (IOException e) {
-        log.error(e.getMessage(), e);
-      }
+    printableThing = nitriteId == null ? null : databaseManager.getPrintableThingById(nitriteId);
+    if (printableThing == null) {
+      log.warn("Printable thing {} not found", nitriteId);
+      clearView();
+      return;
+    }
+    updateButton.setOnAction(this::updatePrintable);
+    try {
+      setupGeneralTab();
+    } catch (IOException e) {
+      log.error(e.getMessage(), e);
+    }
+    try {
+      setupAuthorTabPane();
+    } catch (IOException e) {
+      log.error(e.getMessage(), e);
+    }
+    try {
+      setupImageTab();
+    } catch (IOException e) {
+      log.error(e.getMessage(), e);
+    }
+    try {
+      setupPrintableTab();
+    } catch (IOException e) {
+      log.error(e.getMessage(), e);
     }
     activateEdition(false);
     updateButton.setDisable(true);
@@ -97,14 +101,31 @@ public class PrintableDetailsViewController implements Controller {
 
   }
 
+  /** Removes the previous printable's tabs and controllers so nothing stale can be edited or saved. */
+  private void clearView() {
+    generalTab.setContent(null);
+    authorTab.setContent(null);
+    imagesTab.setContent(null);
+    printableTab.setContent(null);
+    generalTabController = null;
+    authorTabController = null;
+    activateEdition(false);
+    updateButton.setDisable(true);
+    revertButton.setDisable(true);
+  }
+
   private void updatePrintable(ActionEvent actionEvent) {
-    generalTabController.updatePrintableThing();
-    boolean isNewAuthor = authorTabController.isNewAuthor();
-    Author author = authorTabController.updateAuthor();
-    printableThing.setAuthorName(author.getAuthorName());
-    if(isNewAuthor) {
-      databaseManager.addAuthor(author);
+    if (printableThing == null || generalTabController == null || authorTabController == null) {
+      return;
     }
+    generalTabController.updatePrintableThing();
+    // Only touch the author when the user actually changed it in the author tab.
+    authorTabController.getChangedAuthor().ifPresent(author -> {
+      if (databaseManager.getAuthorByName(author.getAuthorName()) == null) {
+        databaseManager.addAuthor(author);
+      }
+      printableThing.setAuthorName(author.getAuthorName());
+    });
     databaseManager.updatePrintableThing(printableThing);
     revertButton.setDisable(true);
     updateButton.setDisable(true);
@@ -114,8 +135,12 @@ public class PrintableDetailsViewController implements Controller {
   private void activateEdition(boolean lock) {
     lockButton.setGraphic(!lock ? new Glyph("FontAwesome", FontAwesome.Glyph.LOCK) : new Glyph("FontAwesome", FontAwesome.Glyph.UNLOCK));
     lockButton.setSelected(!lock);
-    authorTabController.setEditable(lock);
-    generalTabController.setEditable(lock);
+    if (authorTabController != null) {
+      authorTabController.setEditable(lock);
+    }
+    if (generalTabController != null) {
+      generalTabController.setEditable(lock);
+    }
   }
 
   private void setupGeneralTab() throws IOException {
@@ -147,16 +172,20 @@ public class PrintableDetailsViewController implements Controller {
   }
 
   private void setupAuthorTabPane() throws IOException {
-    Author author = databaseManager.getAuthorByName(printableThing.getAuthorName());
-    if (author != null) {
-      FXMLLoader fxmlLoader = new FXMLLoader();
-      fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/details/authortab.fxml"));
-      Region view = fxmlLoader.load();
-      authorTabController = fxmlLoader.getController();
-      authorTabController.initialize(author, printableThing.getPrintableThingId());
-      authorTabController.setParent(this);
-      authorTab.setContent(view);
+    String authorName = StringUtils.defaultIfBlank(printableThing.getAuthorName(), AuthorImporter.DEFAULT_AUTHOR_NAME);
+    Author author = databaseManager.getAuthorByName(authorName);
+    if (author == null) {
+      // Author missing from DB: show a transient one for display only; it is not saved unless the user changes the author.
+      author = Author.builder().authorName(authorName).websiteUrl("").build();
     }
+    // Always replace the controller so a stale one from the previously shown printable is never reused.
+    FXMLLoader fxmlLoader = new FXMLLoader();
+    fxmlLoader.setLocation(getClass().getResource("/io/maddsoft/hbadgerstation/details/authortab.fxml"));
+    Region view = fxmlLoader.load();
+    authorTabController = fxmlLoader.getController();
+    authorTabController.setParent(this);
+    authorTabController.initialize(author, printableThing.getPrintableThingId());
+    authorTab.setContent(view);
   }
 
 }

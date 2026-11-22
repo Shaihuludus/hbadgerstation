@@ -26,6 +26,7 @@ public class GridViewPrintableBuilder {
             printableThingTableElement.setListPosition(tempPosition.getAndIncrement());
             PrintableViewController imageViewController = fxmlLoader.getController();
             imageViewRoot.setOnMouseClicked(imageViewController::onMouseClicked);
+            imageViewRoot.setUserData(printableThingTableElement);
             imageViewController.initialize(printableThingTableElement, gridViewSelectManager, showAuthorName);
             imageViewRoot.prefWidth(GUIDefaults.IMAGE_DISPLAY_SIZE);
             return imageViewRoot;

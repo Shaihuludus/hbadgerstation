@@ -55,14 +55,4 @@ public class ImageTabController implements GridCellSelectionController {
   public void performAction() {
     throw new UnsupportedOperationException();
   }
-
-  @Override
-  public void scrollToLastCell() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void selectLastCell() {
-    throw new UnsupportedOperationException();
-  }
 }

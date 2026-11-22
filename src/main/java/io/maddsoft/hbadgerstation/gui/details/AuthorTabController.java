@@ -10,12 +10,14 @@ import io.maddsoft.hbadgerstation.storage.entities.Author;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.control.GridView;
 import org.controlsfx.control.HyperlinkLabel;
 import org.dizitart.no2.collection.NitriteId;
@@ -34,13 +36,16 @@ public class AuthorTabController extends PrintableThingGridSelectionController {
 
   private NitriteId printableId;
 
+  /** Raw website URL of the currently shown author (the label text is decorated with [] for HyperlinkLabel). */
+  private String websiteUrl;
+
   public void initialize(Author author, NitriteId printableId) {
     gridViewSelectManager.addGridControllerToNotify(this);
     this.author = author;
     this.printableId = printableId;
     authorNameField.setText(author.getAuthorName());
     authorNameField.textProperty().addListener((_, _, _) -> detailsViewController.changeHappened());
-    authorWebsiteField.setText("[" + author.getWebsiteUrl() + "]");
+    showWebsite(author.getWebsiteUrl());
     modelsGrid.setItems(FXCollections.observableArrayList(prepareAuthorModels()));
     modelsGrid.setCellHeight(400);
     modelsGrid.setCellWidth(400);
@@ -55,10 +60,19 @@ public class AuthorTabController extends PrintableThingGridSelectionController {
     authorChooseBox.getSelectionModel().select(this.author);
     authorChooseBox.setManaged(false);
     authorChooseBox.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
-      authorNameField.setText(newValue.toString());
-      authorWebsiteField.setText("[" + newValue.getWebsiteUrl() + "]");
+      if (newValue == null) {
+        return;
+      }
+      authorNameField.setText(newValue.getAuthorName());
+      showWebsite(newValue.getWebsiteUrl());
       detailsViewController.changeHappened();
     });
+  }
+
+  /** HyperlinkLabel renders text in [] as a link. */
+  private void showWebsite(String url) {
+    websiteUrl = url;
+    authorWebsiteField.setText(StringUtils.isBlank(url) ? "" : "[" + url + "]");
   }
 
   private List<Author> prepareAuthor(){
@@ -84,29 +98,23 @@ public class AuthorTabController extends PrintableThingGridSelectionController {
   }
 
   @Override
-  public void scrollToLastCell() {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  @Override
-  public void selectLastCell() {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  @Override
   public void setParent(Controller parent) {
     detailsViewController = (PrintableDetailsViewController) parent;
   }
 
-  public Author updateAuthor() {
-    if(isNewAuthor()) {
-      author.setWebsiteUrl(authorWebsiteField.getText());
+  /**
+   * Returns the author the user switched to, or empty when the author was not changed (same name
+   * as shown initially, or a blank name). The result is the existing author with a matching name,
+   * or a new, not yet persisted author carrying the currently shown website URL (may be empty).
+   */
+  public Optional<Author> getChangedAuthor() {
+    String name = StringUtils.trimToEmpty(authorNameField.getText());
+    if (name.isEmpty() || name.equals(author.getAuthorName())) {
+      return Optional.empty();
     }
-    author.setAuthorName(authorNameField.getText());
-    return author;
-  }
-
-  public boolean isNewAuthor() {
-    return authorChooseBox.getItems().stream().noneMatch(item -> item.getAuthorName().equals(authorNameField.getText()));
+    return Optional.of(authorChooseBox.getItems().stream()
+        .filter(item -> name.equals(item.getAuthorName()))
+        .findFirst()
+        .orElseGet(() -> Author.builder().authorName(name).websiteUrl(StringUtils.defaultString(websiteUrl)).build()));
   }
 }

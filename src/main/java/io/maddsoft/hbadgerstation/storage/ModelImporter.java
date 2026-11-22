@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import lombok.Getter;
 import org.apache.commons.io.FilenameUtils;
 import org.dizitart.no2.collection.NitriteId;
 
@@ -32,6 +33,10 @@ public class ModelImporter {
   private boolean createCollection;
   private List<NitriteId> importedModels = new ArrayList<>();
   private List<String> collectionImages = new ArrayList<>();
+
+  /** Id of the last successfully imported model, or null if nothing was imported. */
+  @Getter
+  private NitriteId lastImportedId;
 
   public ModelImporter(File directory, String authorName) {
     this.directory = directory;
@@ -95,8 +100,11 @@ public class ModelImporter {
     builder.otherFiles(otherFiles);
 
     NitriteId nitriteId = databaseManager.addPrintableThing(builder.build());
-    if(createCollection) {
-      importedModels.add(nitriteId);
+    if (nitriteId != null) {
+      lastImportedId = nitriteId;
+      if (createCollection) {
+        importedModels.add(nitriteId);
+      }
     }
     fillImageCache(images);
   }
@@ -112,20 +120,22 @@ public class ModelImporter {
 
   private void prepareFiles(File subDirectory) {
     File[] files = subDirectory.listFiles();
-    if (files != null) {
-      Arrays.stream(files).forEach(file -> {
-        if (file.isDirectory()) {
-          prepareFiles(file);
-        }
-        String extension = FilenameUtils.getExtension(file.getName()).toLowerCase();
-        if (printableFilesExtensions.contains(extension)) {
-          printableFiles.add(file.getAbsolutePath());
-        } else if (imagesExtensions.contains(extension)) {
-          images.add(file.getAbsolutePath());
-        } else  {
-          otherFiles.add(file.getAbsolutePath());
-        }
-      });
+    if (files == null) {
+      return;
+    }
+    for (File file : files) {
+      if (file.isDirectory()) {
+        prepareFiles(file);
+        continue;
+      }
+      String extension = FilenameUtils.getExtension(file.getName()).toLowerCase();
+      if (printableFilesExtensions.contains(extension)) {
+        printableFiles.add(file.getAbsolutePath());
+      } else if (imagesExtensions.contains(extension)) {
+        images.add(file.getAbsolutePath());
+      } else {
+        otherFiles.add(file.getAbsolutePath());
+      }
     }
   }
 }

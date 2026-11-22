@@ -8,6 +8,7 @@ import io.maddsoft.hbadgerstation.gui.gridview.GridCellController;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewGridCellCallback;
 import io.maddsoft.hbadgerstation.gui.gridview.GridViewPrintableBuilder;
 import io.maddsoft.hbadgerstation.gui.gridview.PrintableThingGridSelectionController;
+import io.maddsoft.hbadgerstation.gui.support.PrintableThingTableElement;
 import io.maddsoft.hbadgerstation.storage.FilterCollection;
 import java.awt.Desktop;
 import java.io.File;
@@ -25,6 +26,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.controlsfx.control.GridView;
+import org.dizitart.no2.collection.NitriteId;
 
 @Slf4j
 public class LibraryViewController extends PrintableThingGridSelectionController {
@@ -101,10 +103,18 @@ public class LibraryViewController extends PrintableThingGridSelectionController
     parent.getDetailsModeButton().setSelected(true);
   }
 
+  /**
+   * Rebuilds the grid. The previous selection is restored when the printable is still visible,
+   * otherwise it is cleared, so selectedItem never points at a cell of the old grid.
+   */
   @Override
   public void refreshDataViews() {
+    NitriteId previouslySelected = selectedItem == null ? null : selectedItem.getPrintableThingId();
     libraryView.getItems().clear();
     libraryView.setItems(FXCollections.observableArrayList(gridViewBuilder.buildPrintable(filtersController.getFilterCollection(), gridViewSelectManager, true)));
+    if (!selectPrintable(previouslySelected)) {
+      gridViewSelectManager.setPrintableViewSelected(null);
+    }
   }
 
   public void refreshAuthors() {
@@ -122,23 +132,45 @@ public class LibraryViewController extends PrintableThingGridSelectionController
   }
 
   public void deletePrintable() {
+    if (selectedItem == null) {
+      return;
+    }
+    // Capture before refresh: refreshDataViews() clears the selection because the item is gone.
+    int deletedPosition = selectedItem.getListPosition();
     databaseManager.deletePrintableThing(selectedItem.getPrintableThingId());
     refreshDataViews();
     ObservableList<VBox> items = libraryView.getItems();
-    if(!items.isEmpty()){
-      EventsCreator.fireMouseClicked(libraryView.getItems().get(selectedItem.getListPosition() < items.size() ? selectedItem.getListPosition() : selectedItem.getListPosition()-1 ));
-      EventsCreator.fireScrollToIndexEvent(libraryView, calculateItemIndex((CustomGridViewSkin<?>) libraryView.getSkin(), selectedItem.getListPosition()));
-    } else {
-      gridViewSelectManager.setPrintableViewSelected(null);
+    if (!items.isEmpty()) {
+      int nextPosition = Math.min(deletedPosition, items.size() - 1);
+      EventsCreator.fireMouseClicked(items.get(nextPosition));
+      scrollToPosition(nextPosition);
     }
   }
 
-  public void scrollToLastCell() {
-    EventsCreator.fireScrollToIndexEvent(libraryView, calculateItemIndex((CustomGridViewSkin<?>) libraryView.getSkin(), selectedItem.getListPosition()));
+  /**
+   * Selects and scrolls to the cell showing the given printable.
+   *
+   * @return false when the id is null or the printable is not in the current (possibly filtered) view
+   */
+  public boolean selectPrintable(NitriteId printableThingId) {
+    if (printableThingId == null) {
+      return false;
+    }
+    for (VBox item : libraryView.getItems()) {
+      if (item != null
+          && item.getUserData() instanceof PrintableThingTableElement element
+          && printableThingId.equals(element.getPrintableThingId())) {
+        EventsCreator.fireMouseClicked(item);
+        scrollToPosition(element.getListPosition());
+        return true;
+      }
+    }
+    return false;
   }
 
-  public void selectLastCell() {
-    EventsCreator.fireMouseClicked(libraryView.getItems().getLast());
+  private void scrollToPosition(int listPosition) {
+    EventsCreator.fireScrollToIndexEvent(libraryView,
+        calculateItemIndex((CustomGridViewSkin<?>) libraryView.getSkin(), listPosition));
   }
 
   public void scrollToFirstCell() {

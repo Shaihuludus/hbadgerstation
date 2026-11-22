@@ -40,16 +40,13 @@ public class MainWindowController implements Controller {
   private LibraryViewController libraryViewController;
 
 
+  /**
+   * Enables the details toggle only when a printable is selected. The library toggle is disabled
+   * only while the library is the current view, so the user can never get stuck in the details view.
+   */
   public void activateModeSwitcher(boolean activate) {
-    if (activate) {
-      modeSwitcher.getToggles().forEach(
-          toggle -> ((ToggleButton)toggle).setDisable(false)
-      );
-    } else {
-      modeSwitcher.getToggles().forEach(
-          toggle -> ((ToggleButton) toggle).setDisable(true)
-      );
-    }
+    detailsModeButton.setDisable(!activate);
+    libraryModeButton.setDisable(!activate && libraryModeButton.isSelected());
   }
 
   public void refreshLibraryView() {

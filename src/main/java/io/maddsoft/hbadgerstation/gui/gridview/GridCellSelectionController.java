@@ -8,10 +8,6 @@ public interface GridCellSelectionController extends Controller {
 
   void performAction();
 
-  void scrollToLastCell();
-
-  void selectLastCell();
-
   default int calculateItemIndex(CustomGridViewSkin<?> skin, int itemPosition) {
     return itemPosition / skin.computeMaxCellsInRow();
   }

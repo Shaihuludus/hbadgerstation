@@ -1,6 +1,7 @@
 package io.maddsoft.hbadgerstation;
 
 import io.maddsoft.hbadgerstation.gui.MainWindowController;
+import io.maddsoft.hbadgerstation.storage.NitriteManager;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -24,6 +25,11 @@ public class HBadgerStation extends Application {
     stage.setOnCloseRequest(e -> Platform.exit());
     stage.show();
     ((MainWindowController) fxmlLoader.getController()).postConstruct();
+  }
+
+  @Override
+  public void stop() {
+    NitriteManager.getInstance().closeDb();
   }
 
   static void setRoot(String fxml) throws IOException {

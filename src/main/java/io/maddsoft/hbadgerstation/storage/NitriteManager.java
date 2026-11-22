@@ -81,7 +81,9 @@ log.info("Opening Nitrite DB...");
 
   public void closeDb() {
     if (db != null) {
+      log.info("Closing Nitrite DB...");
       db.close();
+      db = null;
     }
   }
 }
